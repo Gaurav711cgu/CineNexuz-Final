@@ -1,0 +1,27 @@
+# IDE and editors
+.idea/
+.vscode/
+.DS_Store
+
+# Logs
+*.log
+*.rdb
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.venv/
+venv/
+
+# Environment files
+.env
+.env.local
+.env.*
+*.env
+
+# Local database/caches
+chroma_db/
+.cache/

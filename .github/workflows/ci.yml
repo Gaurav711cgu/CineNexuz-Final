@@ -1,0 +1,93 @@
+name: CineNexuz CI — ML Systems
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  # ─────────────────────────────────────────────────────────────────────────
+  # FRONTEND
+  # ─────────────────────────────────────────────────────────────────────────
+  frontend-ci:
+    name: Frontend Quality Control
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'yarn'
+          cache-dependency-path: 'frontend/yarn.lock'
+
+      - name: Install Dependencies
+        run: |
+          cd frontend
+          yarn install --frozen-lockfile
+
+      - name: Validate Linting
+        run: |
+          cd frontend
+          yarn eslint "src/**/*.{js,jsx}" --max-warnings=30
+
+      - name: Build Application
+        run: |
+          cd frontend
+          CI=false yarn build
+
+  # ─────────────────────────────────────────────────────────────────────────
+  # BACKEND ML — imports + pytest (hard gate, no || echo)
+  # ─────────────────────────────────────────────────────────────────────────
+  backend-ci:
+    name: Backend ML Quality Control
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+          cache: 'pip'
+          cache-dependency-path: 'backend/requirements.txt'
+
+      - name: Install Core Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pytest pytest-cov
+          # Install only packages needed for offline unit tests
+          pip install scikit-learn scipy numpy pandas
+
+      - name: Code Syntax Verification (hard fail)
+        run: |
+          python -m py_compile backend/server.py
+          python -m py_compile backend/ai/cf_svd.py
+          python -m py_compile backend/ai/tfidf_scratch.py
+          python -m py_compile backend/ml/ab_testing.py
+
+      - name: Run ML & System Unit Tests (37 tests, no network, hard fail)
+        run: |
+          cd backend
+          python -m pytest ../tests/unit/ ../tests/test_ml.py -v \
+            --tb=short \
+            --cov=ai \
+            --cov=ml \
+            --cov=feature_store \
+            --cov=resilience \
+            --cov=nearline \
+            --cov=retrieval \
+            --cov-report=term-missing
+        env:
+          PYTHONPATH: .
+
+      - name: Upload Coverage Report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: coverage-report
+          path: .coverage

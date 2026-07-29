@@ -1,0 +1,50 @@
+{
+  "Auth Bypass": {
+    "status": "timeout",
+    "timeout": 10
+  },
+  "Movies List": {
+    "status": "timeout",
+    "timeout": 10
+  },
+  "Movie Genres": {
+    "status": "timeout",
+    "timeout": 10
+  },
+  "TF-IDF Search Comparison": {
+    "status": "timeout",
+    "timeout": 45
+  },
+  "Collaborative Filtering": {
+    "status": "timeout",
+    "timeout": 30
+  },
+  "HuggingFace Sentiment": {
+    "status": "timeout",
+    "timeout": 60
+  },
+  "RAG Status": {
+    "status": "timeout",
+    "timeout": 15
+  },
+  "Model Card": {
+    "status": "timeout",
+    "timeout": 15
+  },
+  "Agent Tools": {
+    "status": "timeout",
+    "timeout": 15
+  },
+  "LangChain Status": {
+    "status": "timeout",
+    "timeout": 15
+  },
+  "LangGraph Info": {
+    "status": "timeout",
+    "timeout": 15
+  },
+  "Get Movie for OTT": {
+    "status": "timeout",
+    "timeout": 10
+  }
+}

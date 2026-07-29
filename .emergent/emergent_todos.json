@@ -1,0 +1,22 @@
+[
+  {
+    "content": "Fix critical security - Remove eval() usage (4 locations)",
+    "status": "in_progress"
+  },
+  {
+    "content": "Fix undefined variables (3 locations)",
+    "status": "pending"
+  },
+  {
+    "content": "Fix React hook dependencies",
+    "status": "pending"
+  },
+  {
+    "content": "Fix empty catch blocks with error logging",
+    "status": "pending"
+  },
+  {
+    "content": "Replace array index keys with stable IDs",
+    "status": "pending"
+  }
+]
