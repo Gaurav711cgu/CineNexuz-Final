@@ -33,7 +33,7 @@ os.makedirs(ARTIFACTS_DIR, exist_ok=True)
 def download_movielens_1m():
     url = "https://files.grouplens.org/datasets/movielens/ml-1m.zip"
     logger.info("Downloading MovieLens 1M...")
-    with urllib.request.urlopen(url) as response:
+    with urllib.request.urlopen(url) as response:  # nosec B310 — URL is a hardcoded https constant sourced from a trusted variable, not user input
         archive = zipfile.ZipFile(io.BytesIO(response.read()))
 
     ratings = pd.read_csv(

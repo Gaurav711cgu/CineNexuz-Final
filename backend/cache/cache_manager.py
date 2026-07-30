@@ -28,7 +28,7 @@ class CacheKeys:
     @staticmethod
     def hash_query(query: str) -> str:
         """Generates MD5 hash for search query caching."""
-        return hashlib.md5(query.strip().lower().encode("utf-8")).hexdigest()
+        return hashlib.md5(query.strip().lower().encode("utf-8"), usedforsecurity=False).hexdigest()  # nosec B324 — MD5 used for cache key hashing only, not cryptographic security
 
     @staticmethod
     def invalidate_user(redis_client, user_id: str, profile_id: str):

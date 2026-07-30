@@ -16,5 +16,5 @@ def get_variant(user_id: str, experiment: str = "rec_algorithm") -> dict:
     exp = EXPERIMENTS.get(experiment)
     if not exp:
         exp = EXPERIMENTS["rec_algorithm"]
-    bucket = int(hashlib.md5(f"{experiment}:{user_id}".encode()).hexdigest(), 16) % len(exp["variants"])
+    bucket = int(hashlib.md5(f"{experiment}:{user_id}".encode(), usedforsecurity=False).hexdigest(), 16) % len(exp["variants"])  # nosec B324 — MD5 for deterministic A/B bucketing, not security
     return exp["variants"][bucket]

@@ -26,7 +26,7 @@ async def seed():
     db = client[os.environ.get("DB_NAME", "cinenexus")]
 
     print("Downloading MovieLens 1M...")
-    with urllib.request.urlopen("https://files.grouplens.org/datasets/movielens/ml-1m.zip") as response:
+    with urllib.request.urlopen("https://files.grouplens.org/datasets/movielens/ml-1m.zip") as response:  # nosec B310 — URL is a hardcoded https constant, not user input
         archive = zipfile.ZipFile(io.BytesIO(response.read()))
     ratings = pd.read_csv(
         archive.open("ml-1m/ratings.dat"),
