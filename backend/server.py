@@ -238,6 +238,13 @@ async def groq_chat(system_msg, user_msg, json_mode=False) -> str:
 def get_redis():
     if UPSTASH_REDIS_URL and UPSTASH_REDIS_TOKEN:
         return UpstashRedis(url=UPSTASH_REDIS_URL, token=UPSTASH_REDIS_TOKEN)
+    redis_url = os.getenv("REDIS_URL")
+    if redis_url:
+        try:
+            import redis
+            return redis.Redis.from_url(redis_url, decode_responses=True)
+        except Exception:
+            pass
     return None
 
 
