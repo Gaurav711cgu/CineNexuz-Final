@@ -1,26 +1,37 @@
 FROM python:3.11-slim
 
-# Create a non-root user with UID 1000 (recommended by Hugging Face)
+# ── Layer 1: System dependencies ──
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# ── Layer 2: Non-root user (HuggingFace + security best practice) ──
 RUN useradd -m -u 1000 user
 WORKDIR /app
 
-# Install torch CPU version first to minimize memory footprints
+# ── Layer 3: Install PyTorch CPU first (heavy layer, cached separately) ──
 COPY requirements.txt .
-RUN pip install torch==2.1.2 --index-url https://download.pytorch.org/whl/cpu
+RUN pip install --no-cache-dir torch==2.1.2 --index-url https://download.pytorch.org/whl/cpu
 
-# Install remaining dependencies
+# ── Layer 4: Install all remaining dependencies ──
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the application files and change ownership to user
+# ── Layer 5: Copy application code + change ownership ──
 COPY --chown=user . .
 
-# Switch to the non-root user
+# ── Layer 6: Switch to non-root user ──
 USER user
 ENV HOME=/home/user
 ENV PATH=/home/user/.local/bin:$PATH
 
-# Expose the mandatory Hugging Face port
-EXPOSE 7860
+# ── PORT: configurable via env — 7860 for HuggingFace, 8001 for local Docker ──
+# Default to 7860 so HuggingFace Space works without any config
+ENV PORT=7860
+EXPOSE ${PORT}
 
-# Run FastAPI server on port 7860
-CMD ["uvicorn", "server:app", "--host", "0.0.0.0", "--port", "7860", "--workers", "1"]
+# ── Health check for Docker Compose orchestration ──
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
+    CMD curl -f http://localhost:${PORT}/health || exit 1
+
+# ── Entrypoint: reads PORT env at runtime ──
+CMD uvicorn server:app --host 0.0.0.0 --port ${PORT} --workers 1

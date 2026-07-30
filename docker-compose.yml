@@ -1,4 +1,4 @@
-version: "3.8"
+# Docker Compose — CineNexus Production Stack
 
 services:
   redis:
@@ -17,6 +17,7 @@ services:
     ports:
       - "8001:8001"
     environment:
+      - PORT=8001
       - MONGO_URL=${MONGO_URL}
       - DB_NAME=${DB_NAME:-cinenexus}
       - JWT_SECRET=${JWT_SECRET}
@@ -44,6 +45,7 @@ services:
       dockerfile: Dockerfile
     command: celery -A worker worker --loglevel=info --concurrency=2
     environment:
+      - PORT=8001
       - MONGO_URL=${MONGO_URL}
       - DB_NAME=${DB_NAME:-cinenexus}
       - REDIS_URL=redis://redis:6379/0
