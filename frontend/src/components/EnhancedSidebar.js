@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { createPortal } from 'react-dom';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../lib/auth';
@@ -342,163 +343,14 @@ export function Sidebar({ collapsed, setCollapsed }) {
       </div>
 
       {/* Floating Settings Modal */}
-      <AnimatePresence>
-        {showSettings && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/80 backdrop-blur-md"
-            onClick={() => setShowSettings(false)}
-          >
-            <motion.div
-              initial={{ scale: 0.95, y: 20 }}
-              animate={{ scale: 1, y: 0 }}
-              exit={{ scale: 0.95, y: 20 }}
-              className="w-full max-w-md p-6 rounded-3xl bg-[#0f0f1c]/95 border border-white/10 text-white relative overflow-hidden shadow-2xl"
-              onClick={(e) => e.stopPropagation()}
-            >
-              {/* Decorative radial gradients */}
-              <div className="absolute top-0 right-0 w-32 h-32 bg-cyan-500/10 rounded-full blur-3xl -z-10" />
-              <div className="absolute bottom-0 left-0 w-32 h-32 bg-purple-500/10 rounded-full blur-3xl -z-10" />
-
-              {/* Header */}
-              <div className="flex items-center justify-between mb-6">
-                <div className="flex items-center gap-2.5">
-                  <div className="w-8 h-8 rounded-lg bg-cyan-500/20 flex items-center justify-center">
-                    <Settings className="text-cyan-400" size={18} />
-                  </div>
-                  <h3 className="text-xl font-bold tracking-tight" style={{ fontFamily: 'Space Grotesk' }}>Preferences Settings</h3>
-                </div>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => setShowSettings(false)}
-                  className="h-8 w-8 hover:bg-white/10 rounded-full"
-                >
-                  <X size={16} />
-                </Button>
-              </div>
-
-              {/* Preferences Settings Options */}
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-semibold">Streaming Quality</p>
-                    <p className="text-xs text-white/50">Configure default video resolutions.</p>
-                  </div>
-                  <select
-                    value={localStorage.getItem('cinenexus_stream_quality') || 'Auto'}
-                    onChange={(e) => {
-                      localStorage.setItem('cinenexus_stream_quality', e.target.value);
-                      toast.success(`Stream quality set to ${e.target.value}`);
-                    }}
-                    className="bg-white/10 border border-white/15 rounded-xl px-3 py-1.5 text-xs focus:outline-none text-white focus:bg-[#151522] cursor-pointer"
-                  >
-                    <option value="Auto">Auto</option>
-                    <option value="1080p">1080p (FHD)</option>
-                    <option value="720p">720p (HD)</option>
-                    <option value="480p">480p (SD)</option>
-                  </select>
-                </div>
-
-                <Separator className="bg-white/5" />
-
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-semibold">Auto-Play Next</p>
-                    <p className="text-xs text-white/50">Play the next episode automatically.</p>
-                  </div>
-                  <Switch
-                    checked={localStorage.getItem('cinenexus_autoplay_next') !== 'false'}
-                    onCheckedChange={(val) => {
-                      localStorage.setItem('cinenexus_autoplay_next', val ? 'true' : 'false');
-                      toast.success(`Auto-play next ${val ? 'Enabled' : 'Disabled'}`);
-                    }}
-                  />
-                </div>
-
-                <Separator className="bg-white/5" />
-
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-semibold">Autoplay Previews</p>
-                    <p className="text-xs text-white/50">Play trailer previews on hover.</p>
-                  </div>
-                  <Switch
-                    checked={localStorage.getItem('cinenexus_autoplay_trailers') !== 'false'}
-                    onCheckedChange={(val) => {
-                      localStorage.setItem('cinenexus_autoplay_trailers', val ? 'true' : 'false');
-                      toast.success(`Autoplay previews ${val ? 'Enabled' : 'Disabled'}`);
-                    }}
-                  />
-                </div>
-
-                <Separator className="bg-white/5" />
-
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-semibold">Interface Theme</p>
-                    <p className="text-xs text-white/50">Choose between dark and light modes.</p>
-                  </div>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="border-white/15 h-8 gap-2 bg-white/5 text-xs text-white hover:bg-white/10 hover:text-white"
-                    onClick={toggleTheme}
-                  >
-                    {theme === 'dark' ? <Sun size={14} className="text-amber-400" /> : <Moon size={14} className="text-cyan-400" />}
-                    <span>{theme === 'dark' ? 'Dark' : 'Light'} Mode</span>
-                  </Button>
-                </div>
-
-                {user && (
-                  <>
-                    <Separator className="bg-white/5" />
-                    <div className="pt-2">
-                      <p className="text-xs text-white/40 uppercase font-bold tracking-wider mb-2">Active Profile</p>
-                      <div className="bg-white/5 rounded-2xl p-3 flex items-center justify-between border border-white/5">
-                        <div className="flex items-center gap-3">
-                          <div
-                            className="w-10 h-10 rounded-xl flex items-center justify-center text-white font-bold select-none"
-                            style={{
-                              background: activeProfile?.avatar_type === 'color' 
-                                ? (activeProfile.avatar_color || '#7C3AED') 
-                                : 'linear-gradient(135deg, #00E4FF 0%, #004D7A 100%)'
-                            }}
-                          >
-                            {activeProfile?.avatar_emoji && ICON_MAP[activeProfile.avatar_emoji] ? (
-                              (() => {
-                                const IconComponent = ICON_MAP[activeProfile.avatar_emoji];
-                                return <IconComponent className="w-5 h-5 text-white filter drop-shadow-sm" />;
-                              })()
-                            ) : activeProfile?.avatar_emoji ? (
-                              <span className="select-none filter drop-shadow-sm">{activeProfile.avatar_emoji}</span>
-                            ) : (
-                              activeProfile?.name?.[0]?.toUpperCase() || user.name?.[0]?.toUpperCase() || 'U'
-                            )}
-                          </div>
-                          <div>
-                            <p className="text-sm font-bold text-white">{activeProfile?.name || 'User'}</p>
-                            <p className="text-xs text-white/50 truncate max-w-[180px]">{user.email}</p>
-                          </div>
-                        </div>
-                        <div className="flex gap-2">
-                          <Link to="/profiles" onClick={() => setShowSettings(false)}>
-                            <Button size="sm" variant="outline" className="text-xs border-white/15 h-8 bg-white/5 hover:bg-white/10 text-white hover:text-white">
-                              Profiles
-                            </Button>
-                          </Link>
-                        </div>
-                      </div>
-                    </div>
-                  </>
-                )}
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      <PreferencesModal
+        isOpen={showSettings}
+        onClose={() => setShowSettings(false)}
+        theme={theme}
+        toggleTheme={toggleTheme}
+        user={user}
+        activeProfile={activeProfile}
+      />
     </motion.div>
   );
 }
@@ -701,165 +553,182 @@ export function MobileSidebar() {
       </AnimatePresence>
 
       {/* Floating Settings Modal */}
-      <AnimatePresence>
-        {showSettings && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/80 backdrop-blur-md px-4"
-            onClick={() => setShowSettings(false)}
-          >
-            <motion.div
-              initial={{ scale: 0.95, y: 20 }}
-              animate={{ scale: 1, y: 0 }}
-              exit={{ scale: 0.95, y: 20 }}
-              className="w-full max-w-md p-6 rounded-3xl bg-[#0f0f1c]/95 border border-white/10 text-white relative overflow-hidden shadow-2xl"
-              onClick={(e) => e.stopPropagation()}
-            >
-              {/* Decorative radial gradients */}
-              <div className="absolute top-0 right-0 w-32 h-32 bg-cyan-500/10 rounded-full blur-3xl -z-10" />
-              <div className="absolute bottom-0 left-0 w-32 h-32 bg-purple-500/10 rounded-full blur-3xl -z-10" />
-
-              {/* Header */}
-              <div className="flex items-center justify-between mb-6">
-                <div className="flex items-center gap-2.5">
-                  <div className="w-8 h-8 rounded-lg bg-cyan-500/20 flex items-center justify-center">
-                    <Settings className="text-cyan-400" size={18} />
-                  </div>
-                  <h3 className="text-xl font-bold tracking-tight" style={{ fontFamily: 'Space Grotesk' }}>Preferences Settings</h3>
-                </div>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => setShowSettings(false)}
-                  className="h-8 w-8 hover:bg-white/10 rounded-full"
-                >
-                  <X size={16} />
-                </Button>
-              </div>
-
-              {/* Preferences Settings Options */}
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-semibold">Streaming Quality</p>
-                    <p className="text-xs text-white/50">Configure default video resolutions.</p>
-                  </div>
-                  <select
-                    value={localStorage.getItem('cinenexus_stream_quality') || 'Auto'}
-                    onChange={(e) => {
-                      localStorage.setItem('cinenexus_stream_quality', e.target.value);
-                      toast.success(`Stream quality set to ${e.target.value}`);
-                    }}
-                    className="bg-white/10 border border-white/15 rounded-xl px-3 py-1.5 text-xs focus:outline-none text-white focus:bg-[#151522] cursor-pointer"
-                  >
-                    <option value="Auto">Auto</option>
-                    <option value="1080p">1080p (FHD)</option>
-                    <option value="720p">720p (HD)</option>
-                    <option value="480p">480p (SD)</option>
-                  </select>
-                </div>
-
-                <Separator className="bg-white/5" />
-
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-semibold">Auto-Play Next</p>
-                    <p className="text-xs text-white/50">Play the next episode automatically.</p>
-                  </div>
-                  <Switch
-                    checked={localStorage.getItem('cinenexus_autoplay_next') !== 'false'}
-                    onCheckedChange={(val) => {
-                      localStorage.setItem('cinenexus_autoplay_next', val ? 'true' : 'false');
-                      toast.success(`Auto-play next ${val ? 'Enabled' : 'Disabled'}`);
-                    }}
-                  />
-                </div>
-
-                <Separator className="bg-white/5" />
-
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-semibold">Autoplay Previews</p>
-                    <p className="text-xs text-white/50">Play trailer previews on hover.</p>
-                  </div>
-                  <Switch
-                    checked={localStorage.getItem('cinenexus_autoplay_trailers') !== 'false'}
-                    onCheckedChange={(val) => {
-                      localStorage.setItem('cinenexus_autoplay_trailers', val ? 'true' : 'false');
-                      toast.success(`Autoplay previews ${val ? 'Enabled' : 'Disabled'}`);
-                    }}
-                  />
-                </div>
-
-                <Separator className="bg-white/5" />
-
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-semibold">Interface Theme</p>
-                    <p className="text-xs text-white/50">Choose between dark and light modes.</p>
-                  </div>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="border-white/15 h-8 gap-2 bg-white/5 text-xs text-white hover:bg-white/10 hover:text-white"
-                    onClick={toggleTheme}
-                  >
-                    {theme === 'dark' ? <Sun size={14} className="text-amber-400" /> : <Moon size={14} className="text-cyan-400" />}
-                    <span>{theme === 'dark' ? 'Dark' : 'Light'} Mode</span>
-                  </Button>
-                </div>
-
-                {user && (
-                  <>
-                    <Separator className="bg-white/5" />
-                    <div className="pt-2">
-                      <p className="text-xs text-white/40 uppercase font-bold tracking-wider mb-2">Active Profile</p>
-                      <div className="bg-white/5 rounded-2xl p-3 flex items-center justify-between border border-white/5">
-                        <div className="flex items-center gap-3">
-                          <div
-                            className="w-10 h-10 rounded-xl flex items-center justify-center text-white font-bold select-none"
-                            style={{
-                              background: activeProfile?.avatar_type === 'color' 
-                                ? (activeProfile.avatar_color || '#7C3AED') 
-                                : 'linear-gradient(135deg, #00E4FF 0%, #004D7A 100%)'
-                            }}
-                          >
-                            {activeProfile?.avatar_emoji && ICON_MAP[activeProfile.avatar_emoji] ? (
-                              (() => {
-                                const IconComponent = ICON_MAP[activeProfile.avatar_emoji];
-                                return <IconComponent className="w-5 h-5 text-white filter drop-shadow-sm" />;
-                              })()
-                            ) : activeProfile?.avatar_emoji ? (
-                              <span className="select-none filter drop-shadow-sm">{activeProfile.avatar_emoji}</span>
-                            ) : (
-                              activeProfile?.name?.[0]?.toUpperCase() || user.name?.[0]?.toUpperCase() || 'U'
-                            )}
-                          </div>
-                          <div>
-                            <p className="text-sm font-bold text-white">{activeProfile?.name || 'User'}</p>
-                            <p className="text-xs text-white/50 truncate max-w-[180px]">{user.email}</p>
-                          </div>
-                        </div>
-                        <div className="flex gap-2">
-                          <Link to="/profiles" onClick={() => setShowSettings(false)}>
-                            <Button size="sm" variant="outline" className="text-xs border-white/15 h-8 bg-white/5 hover:bg-white/10 text-white hover:text-white">
-                              Profiles
-                            </Button>
-                          </Link>
-                        </div>
-                      </div>
-                    </div>
-                  </>
-                )}
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      <PreferencesModal
+        isOpen={showSettings}
+        onClose={() => setShowSettings(false)}
+        theme={theme}
+        toggleTheme={toggleTheme}
+        user={user}
+        activeProfile={activeProfile}
+      />
     </div>
   );
 }
 
+function PreferencesModal({ isOpen, onClose, theme, toggleTheme, user, activeProfile }) {
+  if (typeof document === 'undefined') return null;
+
+  return createPortal(
+    <AnimatePresence>
+      {isOpen && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 z-[999999] flex items-center justify-center bg-black/80 backdrop-blur-md p-4"
+          onClick={onClose}
+        >
+          <motion.div
+            initial={{ scale: 0.95, y: 20 }}
+            animate={{ scale: 1, y: 0 }}
+            exit={{ scale: 0.95, y: 20 }}
+            className="w-full max-w-md p-6 rounded-3xl bg-[#0f0f1c]/95 border border-white/10 text-white relative overflow-hidden shadow-2xl z-[1000000]"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Decorative radial gradients */}
+            <div className="absolute top-0 right-0 w-32 h-32 bg-cyan-500/10 rounded-full blur-3xl -z-10" />
+            <div className="absolute bottom-0 left-0 w-32 h-32 bg-purple-500/10 rounded-full blur-3xl -z-10" />
+
+            {/* Header */}
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-lg bg-cyan-500/20 flex items-center justify-center">
+                  <Settings className="text-cyan-400" size={18} />
+                </div>
+                <h3 className="text-xl font-bold tracking-tight" style={{ fontFamily: 'Space Grotesk' }}>Preferences Settings</h3>
+              </div>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={onClose}
+                className="h-8 w-8 hover:bg-white/10 rounded-full"
+              >
+                <X size={16} />
+              </Button>
+            </div>
+
+            {/* Preferences Settings Options */}
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-semibold">Streaming Quality</p>
+                  <p className="text-xs text-white/50">Configure default video resolutions.</p>
+                </div>
+                <select
+                  value={localStorage.getItem('cinenexus_stream_quality') || 'Auto'}
+                  onChange={(e) => {
+                    localStorage.setItem('cinenexus_stream_quality', e.target.value);
+                    toast.success(`Stream quality set to ${e.target.value}`);
+                  }}
+                  className="bg-white/10 border border-white/15 rounded-xl px-3 py-1.5 text-xs focus:outline-none text-white focus:bg-[#151522] cursor-pointer"
+                >
+                  <option value="Auto">Auto</option>
+                  <option value="1080p">1080p (FHD)</option>
+                  <option value="720p">720p (HD)</option>
+                  <option value="480p">480p (SD)</option>
+                </select>
+              </div>
+
+              <Separator className="bg-white/5" />
+
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-semibold">Auto-Play Next</p>
+                  <p className="text-xs text-white/50">Play the next episode automatically.</p>
+                </div>
+                <Switch
+                  checked={localStorage.getItem('cinenexus_autoplay_next') !== 'false'}
+                  onCheckedChange={(val) => {
+                    localStorage.setItem('cinenexus_autoplay_next', val ? 'true' : 'false');
+                    toast.success(`Auto-play next ${val ? 'Enabled' : 'Disabled'}`);
+                  }}
+                />
+              </div>
+
+              <Separator className="bg-white/5" />
+
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-semibold">Autoplay Previews</p>
+                  <p className="text-xs text-white/50">Play trailer previews on hover.</p>
+                </div>
+                <Switch
+                  checked={localStorage.getItem('cinenexus_autoplay_trailers') !== 'false'}
+                  onCheckedChange={(val) => {
+                    localStorage.setItem('cinenexus_autoplay_trailers', val ? 'true' : 'false');
+                    toast.success(`Autoplay previews ${val ? 'Enabled' : 'Disabled'}`);
+                  }}
+                />
+              </div>
+
+              <Separator className="bg-white/5" />
+
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-semibold">Interface Theme</p>
+                  <p className="text-xs text-white/50">Choose between dark and light modes.</p>
+                </div>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="border-white/15 h-8 gap-2 bg-white/5 text-xs text-white hover:bg-white/10 hover:text-white"
+                  onClick={toggleTheme}
+                >
+                  {theme === 'dark' ? <Sun size={14} className="text-amber-400" /> : <Moon size={14} className="text-cyan-400" />}
+                  <span>{theme === 'dark' ? 'Dark' : 'Light'} Mode</span>
+                </Button>
+              </div>
+
+              {user && (
+                <>
+                  <Separator className="bg-white/5" />
+                  <div className="pt-2">
+                    <p className="text-xs text-white/40 uppercase font-bold tracking-wider mb-2">Active Profile</p>
+                    <div className="bg-white/5 rounded-2xl p-3 flex items-center justify-between border border-white/5">
+                      <div className="flex items-center gap-3">
+                        <div
+                          className="w-10 h-10 rounded-xl flex items-center justify-center text-white font-bold select-none"
+                          style={{
+                            background: activeProfile?.avatar_type === 'color' 
+                              ? (activeProfile.avatar_color || '#7C3AED') 
+                              : 'linear-gradient(135deg, #00E4FF 0%, #004D7A 100%)'
+                          }}
+                        >
+                          {activeProfile?.avatar_emoji && ICON_MAP[activeProfile.avatar_emoji] ? (
+                            (() => {
+                              const IconComponent = ICON_MAP[activeProfile.avatar_emoji];
+                              return <IconComponent className="w-5 h-5 text-white filter drop-shadow-sm" />;
+                            })()
+                          ) : activeProfile?.avatar_emoji ? (
+                            <span className="select-none filter drop-shadow-sm">{activeProfile.avatar_emoji}</span>
+                          ) : (
+                            activeProfile?.name?.[0]?.toUpperCase() || user.name?.[0]?.toUpperCase() || 'U'
+                          )}
+                        </div>
+                        <div>
+                          <p className="text-sm font-bold text-white">{activeProfile?.name || 'User'}</p>
+                          <p className="text-xs text-white/50 truncate max-w-[180px]">{user.email}</p>
+                        </div>
+                      </div>
+                      <div className="flex gap-2">
+                        <Link to="/profiles" onClick={onClose}>
+                          <Button size="sm" variant="outline" className="text-xs border-white/15 h-8 bg-white/5 hover:bg-white/10 text-white hover:text-white">
+                            Profiles
+                          </Button>
+                        </Link>
+                      </div>
+                    </div>
+                  </div>
+                </>
+              )}
+            </div>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>,
+    document.body
+  );
+}
+
 export default Sidebar;
+
