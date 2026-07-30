@@ -3613,6 +3613,26 @@ async def admin_list_users(request: Request, page: int = 1, limit: int = 20):
     total = await db.users.count_documents({})
     return {"users": [serialize_doc(u) for u in users], "total": total}
 
+class UpdateUserRoleRequest(BaseModel):
+    role: str
+
+@app.put("/api/admin/users/{user_id}/role")
+async def update_user_role(user_id: str, req: UpdateUserRoleRequest, request: Request):
+    """Promote or demote user role (admin, moderator, user)"""
+    await require_admin(request)
+    if req.role not in ("user", "moderator", "admin"):
+        raise HTTPException(400, "Invalid role. Allowed values: user, moderator, admin")
+    
+    query = {"_id": ObjectId(user_id)} if ObjectId.is_valid(user_id) else {"_id": user_id}
+    result = await db.users.find_one_and_update(
+        query,
+        {"$set": {"role": req.role, "is_admin": (req.role == "admin")}},
+        return_document=ReturnDocument.AFTER
+    )
+    if not result:
+        raise HTTPException(404, "User not found")
+    return {"status": "success", "user": serialize_doc(result)}
+
 # ============================================================
 # ADMIN: ADD CUSTOM MOVIE
 # ============================================================
