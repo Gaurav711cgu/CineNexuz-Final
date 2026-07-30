@@ -77,7 +77,43 @@ CREATE TABLE IF NOT EXISTS profile_ratings (
     UNIQUE(profile_id, movie_id)
 );
 
--- Create standard indexes for relational queries
+-- Add Role-Based Access Control (RBAC) support to users
+ALTER TABLE users ADD COLUMN IF NOT EXISTS role VARCHAR(20) DEFAULT 'user' CHECK (role IN ('user', 'moderator', 'admin'));
+CREATE INDEX IF NOT EXISTS idx_users_role ON users(role);
+
+-- Compound index for the most common query pattern: genre + sort by vote_average
+CREATE INDEX IF NOT EXISTS idx_movies_genre_vote ON movies USING GIN (genres) WHERE vote_average > 6.0;
+
+-- Language filtering (exact match) + popularity sorting
+CREATE INDEX IF NOT EXISTS idx_movies_language_popularity ON movies(original_language, vote_average DESC);
+
+-- Watch history: most common query is profile history, newest first
+CREATE INDEX IF NOT EXISTS idx_profile_history_profile_watched ON profile_history(profile_id, last_watched DESC);
+
+-- Watchlist: common pattern is EXISTS check
+CREATE INDEX IF NOT EXISTS idx_watchlist_profile_movie ON profile_watchlist(profile_id, movie_id);
+
+-- Ratings for CF model: fast profile ratings retrieval
+CREATE INDEX IF NOT EXISTS idx_ratings_profile ON profile_ratings(profile_id, rated_at DESC);
+
+-- Full text search on movie titles and overviews using tsvector
+ALTER TABLE movies ADD COLUMN IF NOT EXISTS search_vector tsvector;
+CREATE INDEX IF NOT EXISTS idx_movies_fts ON movies USING GIN (search_vector);
+
+-- Trigger function to keep search_vector updated automatically
+CREATE OR REPLACE FUNCTION update_movie_search_vector() RETURNS TRIGGER AS $$
+BEGIN
+    NEW.search_vector := to_tsvector('english', COALESCE(NEW.title, '') || ' ' || COALESCE(NEW.overview, ''));
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+DROP TRIGGER IF EXISTS update_search_vector_trigger ON movies;
+CREATE TRIGGER update_search_vector_trigger
+    BEFORE INSERT OR UPDATE ON movies
+    FOR EACH ROW EXECUTE FUNCTION update_movie_search_vector();
+
+-- Standard relational indexes
 CREATE INDEX IF NOT EXISTS idx_profiles_user_id ON profiles(user_id);
 CREATE INDEX IF NOT EXISTS idx_history_profile_id ON profile_history(profile_id);
 CREATE INDEX IF NOT EXISTS idx_watchlist_profile_id ON profile_watchlist(profile_id);

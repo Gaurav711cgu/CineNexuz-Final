@@ -71,3 +71,26 @@ def rebuild_tfidf_index():
 
     redis = redis_lib.from_url(os.environ.get("REDIS_URL", "redis://localhost:6379/0"))
     redis.set("rebuild_tfidf", "1", ex=300)
+
+
+@celery_app.task(
+    name="tasks.refresh_recommendations",
+    max_retries=3,
+    default_retry_delay=60,
+    soft_time_limit=120
+)
+def refresh_user_recommendations(user_id: str, profile_id: str):
+    """Triggered asynchronously after a user watches or rates content."""
+    import json
+    import redis as redis_lib
+    from ai.cf_svd import cf_engine
+
+    try:
+        recs = cf_engine.get_collaborative_recommendations(user_id, n_recommendations=50)
+        redis = redis_lib.from_url(os.environ.get("REDIS_URL", "redis://localhost:6379/0"))
+        cache_key = f"recs:v2:{user_id}:{profile_id}"
+        redis.setex(cache_key, 86400, json.dumps(recs, default=str))
+        return {"user_id": user_id, "profile_id": profile_id, "status": "refreshed", "count": len(recs)}
+    except Exception as exc:
+        raise refresh_user_recommendations.retry(exc=exc)
+

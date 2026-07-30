@@ -72,6 +72,30 @@ from retrieval.faiss_index import faiss_retriever
 from resilience.circuit_breaker import redis_breaker, tmdb_breaker
 from resilience.rate_limiter import rate_limiter
 
+# Import Security, Cache, & Telemetry Modules (PART A, B, D)
+from security import (
+    SecurityHeadersMiddleware,
+    TraceIDMiddleware,
+    create_access_token,
+    create_refresh_token,
+    set_refresh_token_cookie,
+    blacklist_token,
+    is_token_blacklisted,
+    verify_token,
+    require_role,
+    UserRole
+)
+from cache.cache_manager import CacheKeys, get_cached_or_fetch, warm_caches
+from metrics.prometheus import (
+    REQUEST_LATENCY,
+    CACHE_HIT_COUNTER,
+    CACHE_MISS_COUNTER,
+    RECOMMENDATION_SCORE,
+    ACTIVE_WATCH_SESSIONS,
+    SEARCH_QUERIES_TOTAL
+)
+from fastapi.middleware.gzip import GZipMiddleware
+
 # ============================================================
 # Config
 # ============================================================
@@ -130,11 +154,15 @@ if not MONGO_URL:
 stripe_lib.api_key = STRIPE_API_KEY
 
 # ── Cloudflare R2 client (boto3 S3-compatible) ────────────────────────────────
-import boto3
-from botocore.exceptions import ClientError
+try:
+    import boto3
+    from botocore.exceptions import ClientError
+except ImportError:
+    boto3 = None
+    ClientError = Exception
 
 r2_client = None
-if R2_ACCOUNT_ID and R2_ACCESS_KEY and R2_SECRET_KEY:
+if boto3 and R2_ACCOUNT_ID and R2_ACCESS_KEY and R2_SECRET_KEY:
     r2_client = boto3.client(
         "s3",
         endpoint_url=f"https://{R2_ACCOUNT_ID}.r2.cloudflarestorage.com",
@@ -220,7 +248,15 @@ stream_starts = Counter("cinenexus_stream_starts_total", "Video stream starts")
 # ============================================================
 # Database
 # ============================================================
-client = AsyncIOMotorClient(MONGO_URL, tlsAllowInvalidCertificates=True)
+client = AsyncIOMotorClient(
+    MONGO_URL,
+    tlsAllowInvalidCertificates=True,
+    maxPoolSize=50,
+    minPoolSize=5,
+    waitQueueTimeoutMS=5000,
+    connectTimeoutMS=5000,
+    serverSelectionTimeoutMS=3000
+)
 db = client[DB_NAME]
 
 # ============================================================
@@ -1119,12 +1155,22 @@ async def lifespan(app: FastAPI):
     langgraph_agent.set_dependencies(db, vector_store)
     
     redis_inst = get_redis()
+    app.state.redis = redis_inst
+    app.state.httpx_client = httpx.AsyncClient(
+        base_url=TMDB_BASE,
+        params={"api_key": TMDB_API_KEY},
+        timeout=httpx.Timeout(connect=3.0, read=10.0, write=3.0),
+        limits=httpx.Limits(max_connections=50, max_keepalive_connections=20)
+    )
     feature_store.set_clients(redis_client=redis_inst, db=db)
     rate_limiter.set_redis(redis_inst)
     nearline_worker.set_db(db)
     two_stage_pipeline.set_db(db)
     await nearline_worker.start()
     log_event(logging.INFO, "Nearline worker event loop & feature store bound successfully", "startup")
+
+    # Trigger startup cache warming
+    await warm_caches(db, redis_inst)
     
     # Initialize Supabase pool dynamically
     if os.getenv("SUPABASE_DB_URL") or os.getenv("DATABASE_URL"):
@@ -1169,26 +1215,192 @@ async def lifespan(app: FastAPI):
 # ============================================================
 # App
 # ============================================================
-app = FastAPI(title="CineNexus API", lifespan=lifespan)
+app = FastAPI(
+    title="CineNexus API",
+    description="Distributed streaming platform backend with event-driven ML pipeline",
+    version="2.0.0",
+    docs_url="/api/docs",
+    redoc_url="/api/redoc",
+    openapi_url="/api/openapi.json",
+    lifespan=lifespan
+)
 limiter = Limiter(key_func=get_remote_address)
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+
+# 1. GZip Compression Middleware (60-80% payload size reduction)
+app.add_middleware(GZipMiddleware, minimum_size=1000)
+
+# 2. Security Headers & Request Correlation Trace ID Middleware
+app.add_middleware(SecurityHeadersMiddleware)
+app.add_middleware(TraceIDMiddleware)
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=ALLOWED_ORIGINS,
     allow_credentials=True,
     allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
-    allow_headers=["Authorization", "Content-Type", "Accept", "X-Requested-With"],
+    allow_headers=["Authorization", "Content-Type", "Accept", "X-Requested-With", "X-Trace-ID"],
 )
 
 
 @app.middleware("http")
-async def security_headers(request: Request, call_next):
+async def track_request_metrics(request: Request, call_next):
+    start = time.perf_counter()
     response = await call_next(request)
-    response.headers["X-Content-Type-Options"] = "nosniff"
-    response.headers["X-Frame-Options"] = "DENY"
-    response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
+    duration = time.perf_counter() - start
+    try:
+        REQUEST_LATENCY.labels(
+            method=request.method,
+            endpoint=request.url.path,
+            status_code=response.status_code
+        ).observe(duration)
+    except Exception:
+        pass
     return response
+
+
+# ============================================================
+# Health Probes & Pool Telemetry (PART G1 & B3)
+# ============================================================
+@app.get("/health")
+async def health_check():
+    """Shallow liveness probe for load balancers / container health checks."""
+    return {"status": "ok", "timestamp": datetime.now(timezone.utc).isoformat()}
+
+
+@app.get("/health/deep")
+async def deep_health_check():
+    """Deep readiness probe testing MongoDB, Redis, and PostgreSQL database connectivity."""
+    checks = {}
+
+    # 1. MongoDB Health
+    try:
+        await db.command("ping")
+        checks["mongodb"] = {"status": "healthy"}
+    except Exception as e:
+        checks["mongodb"] = {"status": "unhealthy", "error": str(e)}
+
+    # 2. Redis Health
+    try:
+        redis_inst = get_redis()
+        if redis_inst:
+            redis_inst.ping()
+            checks["redis"] = {"status": "healthy"}
+        else:
+            checks["redis"] = {"status": "degraded", "message": "In-memory fallback active"}
+    except Exception as e:
+        checks["redis"] = {"status": "unhealthy", "error": str(e)}
+
+    # 3. PostgreSQL / Supabase Health
+    try:
+        if supabase_db and supabase_db.is_connected:
+            checks["postgres"] = {"status": "healthy"}
+        else:
+            checks["postgres"] = {"status": "degraded", "message": "PostgreSQL not connected"}
+    except Exception as e:
+        checks["postgres"] = {"status": "unhealthy", "error": str(e)}
+
+    all_healthy = all(v["status"] in ["healthy", "degraded"] for v in checks.values())
+
+    return {
+        "status": "healthy" if all_healthy else "unhealthy",
+        "checks": checks,
+        "timestamp": datetime.now(timezone.utc).isoformat()
+    }
+
+
+@app.get("/metrics/pools")
+async def connection_pool_metrics():
+    """Exposes database connection pool health metrics."""
+    return {
+        "mongo_pool_nodes": len(client.nodes) if hasattr(client, "nodes") else 1,
+        "supabase_connected": getattr(supabase_db, "is_connected", False),
+        "timestamp": datetime.now(timezone.utc).isoformat()
+    }
+
+
+# ============================================================
+# Auth Rotation & Revocation Endpoints (PART A1)
+# ============================================================
+class RefreshTokenRequest(BaseModel):
+    refresh_token: Optional[str] = None
+
+
+@app.post("/api/auth/refresh")
+async def refresh_auth_token(body: Optional[RefreshTokenRequest] = None, request: Request = None, response: Response = None):
+    """
+    Refresh Token Rotation Endpoint:
+    Accepts refresh token from body or HttpOnly cookie.
+    Validates token, revokes previous JTI in Redis, and issues new Access (15m) + Refresh (7d) tokens.
+    """
+    token_str = None
+    if body and body.refresh_token:
+        token_str = body.refresh_token
+    elif request and "refresh_token" in request.cookies:
+        token_str = request.cookies["refresh_token"]
+
+    if not token_str:
+        raise HTTPException(401, "Refresh token required in body or HttpOnly cookie")
+
+    redis_inst = getattr(app.state, "redis", get_redis())
+    payload = verify_token(token_str, redis_client=redis_inst, expected_type="refresh")
+
+    old_jti = payload.get("jti")
+    user_id = payload.get("sub")
+
+    # Invalidate previous refresh token JTI in Redis (Rotation)
+    if old_jti and redis_inst:
+        blacklist_token(redis_inst, old_jti, ttl=604800)
+
+    # Fetch user role safely
+    user_role = "user"
+    if db is not None and user_id:
+        try:
+            query = {"_id": ObjectId(user_id)} if ObjectId.is_valid(str(user_id)) else {"_id": user_id}
+            user_doc = await db.users.find_one(query)
+            if user_doc:
+                user_role = user_doc.get("role", "user")
+        except Exception as e:
+            logger.warning(f"DB lookup skipped in refresh_auth_token: {e}")
+
+    # Issue new token pair
+    new_access_token = create_access_token(user_id=user_id, role=user_role)
+    new_refresh_token = create_refresh_token(user_id=user_id)
+
+    if response:
+        set_refresh_token_cookie(response, new_refresh_token)
+
+    return {
+        "access_token": new_access_token,
+        "refresh_token": new_refresh_token,
+        "token_type": "bearer",
+        "expires_in": 900
+    }
+
+
+@app.post("/api/auth/logout")
+async def logout_user(request: Request, response: Response):
+    """
+    Token Blacklisting & Logout Endpoint:
+    Revokes active access token JTI in Redis and clears HttpOnly refresh cookie.
+    """
+    auth = request.headers.get("Authorization", "")
+    redis_inst = getattr(app.state, "redis", get_redis())
+
+    if auth.startswith("Bearer "):
+        token = auth[7:]
+        try:
+            payload = jwt.decode(token, JWT_SECRET, algorithms=["HS256"])
+            jti = payload.get("jti")
+            if jti and redis_inst:
+                blacklist_token(redis_inst, jti, ttl=900)
+        except Exception:
+            pass
+
+    # Clear HttpOnly cookie
+    response.delete_cookie(key="refresh_token", path="/api/auth")
+    return {"message": "Successfully logged out and revoked access token"}
 
 
 @app.middleware("http")
