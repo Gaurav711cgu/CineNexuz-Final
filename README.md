@@ -456,12 +456,12 @@ Nightly APScheduler Cron
 
 ### Authentication
 
-| Method | Endpoint | Description | Auth |
+| Method | Endpoint | Description | Auth Required |
 |---|---|---|---|
-| `POST` | `/api/auth/register` | Register new user + hash password | None |
-| `POST` | `/api/auth/login` | Issue access + refresh token pair | None |
-| `POST` | `/api/auth/refresh` | Rotate refresh token (revokes old) | Cookie |
-| `POST` | `/api/auth/logout` | Blacklist JTI in Redis | Bearer |
+| `POST` | `/api/auth/register` | Register new user + hash password | **Public** (Unauthenticated) |
+| `POST` | `/api/auth/login` | Issue access + refresh token pair | **Public** (Unauthenticated) |
+| `POST` | `/api/auth/refresh` | Rotate refresh token (revokes old) | **HttpOnly Cookie** |
+| `POST` | `/api/auth/logout` | Blacklist JTI in Redis | **Bearer Token** |
 
 <details>
 <summary><b>POST /api/auth/login — Example</b></summary>
