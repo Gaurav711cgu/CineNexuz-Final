@@ -57,8 +57,9 @@ export function Sidebar({ collapsed, setCollapsed }) {
 
   const handleSearch = (e) => {
     e.preventDefault();
-    if (searchQuery.trim()) {
-      navigate(`/search?q=${encodeURIComponent(searchQuery)}`);
+    const cleanQuery = searchQuery ? searchQuery.replace(/[^\w\s\-\.\,\:\?]/gi, '').trim() : '';
+    if (cleanQuery) {
+      navigate(`/search?q=${encodeURIComponent(cleanQuery)}`);
       setSearchQuery('');
     }
   };

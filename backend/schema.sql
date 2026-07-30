@@ -118,3 +118,68 @@ CREATE INDEX IF NOT EXISTS idx_profiles_user_id ON profiles(user_id);
 CREATE INDEX IF NOT EXISTS idx_history_profile_id ON profile_history(profile_id);
 CREATE INDEX IF NOT EXISTS idx_watchlist_profile_id ON profile_watchlist(profile_id);
 CREATE INDEX IF NOT EXISTS idx_ratings_profile_id ON profile_ratings(profile_id);
+
+-- ── 6. Advanced SQL Concept 1: Materialized Views with Concurrent Refresh ──
+-- Pre-computes genre rating averages and total engagement counts for fast analytics queries
+CREATE MATERIALIZED VIEW IF NOT EXISTS mv_genre_popularity_stats AS
+SELECT 
+    g.genre,
+    COUNT(m.tmdb_id) AS total_movies,
+    ROUND(AVG(m.vote_average)::numeric, 2) AS avg_vote,
+    SUM(m.runtime) AS total_runtime_minutes
+FROM (
+    SELECT DISTINCT unnest(genres) AS genre FROM movies
+) g
+JOIN movies m ON g.genre = ANY(m.genres)
+GROUP BY g.genre;
+
+CREATE UNIQUE INDEX IF NOT EXISTS idx_mv_genre_stats_genre ON mv_genre_popularity_stats(genre);
+
+-- ── 7. Advanced SQL Concept 2: Window Functions (ROW_NUMBER & RANK) ──
+-- Fetches top-ranked movies per genre using SQL Windowing (PARTITION BY genre ORDER BY vote_average)
+CREATE OR REPLACE VIEW v_top_movies_per_genre AS
+WITH ranked_movies AS (
+    SELECT 
+        m.tmdb_id,
+        m.title,
+        m.vote_average,
+        m.original_language,
+        g.genre,
+        ROW_NUMBER() OVER (PARTITION BY g.genre ORDER BY m.vote_average DESC, m.popularity DESC) AS genre_rank
+    FROM movies m,
+    UNNEST(m.genres) AS g(genre)
+    WHERE m.vote_average > 0
+)
+SELECT tmdb_id, title, vote_average, original_language, genre, genre_rank
+FROM ranked_movies
+WHERE genre_rank <= 10;
+
+-- ── 8. Advanced SQL Concept 3: Recursive Common Table Expressions (Recursive CTEs) ──
+-- Navigates movie collection franchise hierarchies (prequels / sequels / spin-offs)
+CREATE OR REPLACE VIEW v_movie_franchise_tree AS
+WITH RECURSIVE franchise_tree AS (
+    -- Anchor member: root movie
+    SELECT 
+        tmdb_id, 
+        title, 
+        release_date,
+        1 AS timeline_depth,
+        ARRAY[tmdb_id] AS path
+    FROM movies
+    WHERE tmdb_id = 1517102 OR tmdb_id = 550
+    
+    UNION ALL
+    
+    -- Recursive member: fetch dependent sequels
+    SELECT 
+        m.tmdb_id, 
+        m.title, 
+        m.release_date,
+        ft.timeline_depth + 1,
+        ft.path || m.tmdb_id
+    FROM movies m
+    JOIN franchise_tree ft ON m.release_date > ft.release_date
+    WHERE ft.timeline_depth < 5 AND m.genres && (SELECT genres FROM movies WHERE tmdb_id = ft.tmdb_id)
+)
+SELECT * FROM franchise_tree;
+
