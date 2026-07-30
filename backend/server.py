@@ -1159,7 +1159,7 @@ async def lifespan(app: FastAPI):
     app.state.httpx_client = httpx.AsyncClient(
         base_url=TMDB_BASE,
         params={"api_key": TMDB_API_KEY},
-        timeout=httpx.Timeout(connect=3.0, read=10.0, write=3.0),
+        timeout=httpx.Timeout(connect=3.0, read=10.0, write=3.0, pool=5.0),
         limits=httpx.Limits(max_connections=50, max_keepalive_connections=20)
     )
     feature_store.set_clients(redis_client=redis_inst, db=db)

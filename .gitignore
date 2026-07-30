@@ -103,6 +103,9 @@ chroma_db/
 **/*.sqlite3
 *.npy
 **/*.npy
+# Allow trained SVD model artifacts to be committed
+!backend/ml/artifacts/*.npy
+!ml/artifacts/*.npy
 
 # Ignore nested git folder in backend
 backend/.git
