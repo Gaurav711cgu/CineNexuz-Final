@@ -5,7 +5,7 @@
 <br/>
 
 **A production-grade distributed recommendation engine and streaming platform**
-**built with FAANG-level systems thinking — security, observability, and scale by design.**
+**built with enterprise-grade systems thinking — security, observability, and scale by design.**
 
 <br/>
 
@@ -26,7 +26,7 @@
 
 ---
 
-## The 6-Second Pitch
+## Executive Summary
 
 > **CineNexus is not another CRUD movie app.** It is a full-stack distributed system that demonstrates the same architectural patterns used at Netflix, Spotify, and YouTube — built from scratch, defended at every layer.
 
