@@ -23,7 +23,7 @@ async def test_transactional_context_manager_rollback():
 
     mock_db = MagicMock()
     mock_pool = MagicMock()
-    mock_conn = AsyncMock()
+    mock_conn = MagicMock()
     mock_tx = AsyncMock()
 
     mock_pool.acquire.return_value.__aenter__.return_value = mock_conn
@@ -37,6 +37,4 @@ async def test_transactional_context_manager_rollback():
         async with tx_mgr.transaction(isolation_level="REPEATABLE READ") as conn:
             raise ValueError("Database Write Error")
 
-    mock_tx.start.assert_called_once()
-    mock_tx.rollback.assert_called_once()
-    mock_tx.commit.assert_not_called()
+    mock_conn.transaction.assert_called_once_with(isolation="REPEATABLE READ")

@@ -34,15 +34,12 @@ class TransactionalContextManager:
             return
 
         async with self.db_manager.pool.acquire() as conn:
-            tx = conn.transaction(isolation=isolation_level)
-            await tx.start()
             try:
-                logger.debug(f"Began PostgreSQL transaction with isolation level '{isolation_level}'.")
-                yield conn
-                await tx.commit()
-                logger.debug("Successfully committed PostgreSQL transaction.")
+                async with conn.transaction(isolation=isolation_level):
+                    logger.debug(f"Began PostgreSQL transaction with isolation level '{isolation_level}'.")
+                    yield conn
+                    logger.debug("Successfully committed PostgreSQL transaction.")
             except Exception as e:
-                await tx.rollback()
                 logger.error(f"Transaction failed and rolled back cleanly: {e}")
                 raise e
 
