@@ -18,8 +18,12 @@ from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 logger = logging.getLogger("security.auth")
 security_scheme = HTTPBearer(auto_error=False)
 
+import os
+
 # Secrets & TTLs
-JWT_SECRET = "cinenexus-super-secret-jwt-key-change-in-production"
+def get_jwt_secret() -> str:
+    return os.getenv("JWT_SECRET", "cinenexus-super-secret-jwt-key-change-in-production")
+
 JWT_ALGORITHM = "HS256"
 ACCESS_TOKEN_TTL_SECONDS = 900        # 15 minutes
 REFRESH_TOKEN_TTL_SECONDS = 604800    # 7 days
@@ -44,7 +48,7 @@ def create_access_token(user_id: str, role: str = "user", extra_claims: Optional
     }
     if extra_claims:
         payload.update(extra_claims)
-    return jwt.encode(payload, JWT_SECRET, algorithm=JWT_ALGORITHM)
+    return jwt.encode(payload, get_jwt_secret(), algorithm=JWT_ALGORITHM)
 
 
 def create_refresh_token(user_id: str) -> str:
@@ -57,7 +61,7 @@ def create_refresh_token(user_id: str) -> str:
         "iat": now,
         "exp": now + REFRESH_TOKEN_TTL_SECONDS
     }
-    return jwt.encode(payload, JWT_SECRET, algorithm=JWT_ALGORITHM)
+    return jwt.encode(payload, get_jwt_secret(), algorithm=JWT_ALGORITHM)
 
 
 def set_refresh_token_cookie(response: Response, refresh_token: str):
@@ -97,7 +101,7 @@ def is_token_blacklisted(redis_client, jti: str) -> bool:
 def verify_token(token: str, redis_client=None, expected_type: str = "access") -> Dict[str, Any]:
     """Decodes and validates a JWT token, checking type and Redis blacklist status."""
     try:
-        payload = jwt.decode(token, JWT_SECRET, algorithms=[JWT_ALGORITHM])
+        payload = jwt.decode(token, get_jwt_secret(), algorithms=[JWT_ALGORITHM])
         jti = payload.get("jti")
         token_type = payload.get("type", "access")
 

@@ -1559,6 +1559,7 @@ async def clerk_sync(request: Request, req: ClerkSyncRequest):
     }
 
 @app.post("/api/auth/signup")
+@app.post("/api/auth/register")
 @limiter.limit("5/minute")
 async def signup(request: Request, req: SignupRequest):
     existing = await db.users.find_one({"email": req.email})
