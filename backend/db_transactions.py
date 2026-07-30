@@ -8,7 +8,7 @@ Implements:
 """
 import logging
 from contextlib import asynccontextmanager
-from typing import Optional, AsyncGenerator
+from typing import Any, Optional, AsyncGenerator
 
 logger = logging.getLogger("db.transactions")
 
