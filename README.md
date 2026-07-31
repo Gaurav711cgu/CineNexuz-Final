@@ -42,30 +42,6 @@
 
 ---
 
-## Platform Application Showcase
-
-<div align="center">
-
-| Home Streaming Catalog | Interactive Discovery & Detail |
-|---|---|
-| <img src="docs/screenshots/screenshot-1.png" width="450" /> | <img src="docs/screenshots/screenshot-2.png" width="450" /> |
-
-| LangGraph AI Lab & RAG Chatbot | Real-Time Watch Party & Sync |
-|---|---|
-| <img src="docs/screenshots/screenshot-3.png" width="450" /> | <img src="docs/screenshots/screenshot-4.png" width="450" /> |
-
-| User Profile & Taste Vectors | Admin Dashboard & MLOps Controls |
-|---|---|
-| <img src="docs/screenshots/screenshot-5.png" width="450" /> | <img src="docs/screenshots/screenshot-6.png" width="450" /> |
-
-<br/>
-
-<img src="docs/screenshots/screenshot-7.png" width="920" />
-
-</div>
-
----
-
 ## Production System Benchmarks
 
 > All metrics verified via `k6` load testing at **500 Virtual Users** and Prometheus telemetry.
