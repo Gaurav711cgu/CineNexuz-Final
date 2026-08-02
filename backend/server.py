@@ -60,8 +60,8 @@ from ai.langchain_rag import langchain_rag
 from ai.langgraph_agent import langgraph_agent
 from ml.model_server import svd_recommender
 from ml.embedding_search import embedding_engine
-from ml.ab_testing import get_variant, EXPERIMENTS
-from ml.explainability import explain_recommendation
+from ml.ab_testing import get_variant, EXPERIMENTS, log_experiment_event, calculate_experiment_significance
+from ml.explainability import explain_recommendation, explain_recommendation_detailed
 from movie_collections.collection_ingest import upsert_collection
 
 # Import v2.0 Architecture Modules
@@ -5147,7 +5147,52 @@ async def dispatch_watch_event(payload: Dict[str, Any] = Body(...)):
     return {"status": "queued", "event": "movie.watched", "accepted_at": datetime.now(timezone.utc).isoformat()}
 
     
-    return {"message": "Added to watch history", "taste_updated": True}
+class OnboardingPreferencesRequest(BaseModel):
+    preferred_genres: List[str] = Field(default_factory=list)
+    favorite_eras: List[str] = Field(default_factory=list)
+    preferred_languages: List[str] = Field(default_factory=lambda: ["en"])
+
+
+class ABTestEventRequest(BaseModel):
+    experiment: str = "rec_algorithm"
+    variant: str
+    event_type: str = "impression"
+    rating_value: Optional[float] = None
+
+
+@app.post("/api/users/onboarding-preferences")
+async def save_onboarding_preferences(req: OnboardingPreferencesRequest, request: Request):
+    """Saves user onboarding preferences for cold-start recommendation personalization."""
+    user = await require_auth(request)
+    genre_weights = {g: 1.0 for g in req.preferred_genres}
+    
+    taste_vector = user.get("taste_vector", {})
+    taste_vector["genre_weights"] = genre_weights
+    taste_vector["onboarding_completed"] = True
+    
+    await db.users.update_one(
+        {"_id": ObjectId(user["_id"])},
+        {"$set": {
+            "taste_vector": taste_vector,
+            "onboarding_genres": req.preferred_genres,
+            "onboarding_eras": req.favorite_eras
+        }}
+    )
+    return {"status": "success", "message": "Onboarding preferences saved", "genres_set": req.preferred_genres}
+
+
+@app.post("/api/recommendations/ab-test/event")
+async def log_ab_test_event(req: ABTestEventRequest):
+    """Logs conversion event for A/B testing experiment."""
+    log_experiment_event(req.experiment, req.variant, req.event_type, req.rating_value)
+    return {"status": "logged", "experiment": req.experiment, "variant": req.variant}
+
+
+@app.get("/api/recommendations/ab-test/metrics")
+async def get_ab_test_metrics(experiment: str = Query("rec_algorithm")):
+    """Returns online A/B testing stats, CTR conversion, and Chi-squared significance."""
+    return calculate_experiment_significance(experiment)
+
 
 @app.get("/api/recommendations/personalized")
 async def get_personalized_recommendations(request: Request, limit: int = 20):

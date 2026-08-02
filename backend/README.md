@@ -48,50 +48,50 @@ graph TD
     classDef pipeline fill:#9f1239,stroke:#f43f5e,stroke-width:2px,color:#fff
 
     %% Nodes
-    Client["Client Applications<br/>(React / React Native)"]:::client
-    LB["Load Balancer<br/>(Nginx / Cloudflare)"]:::api
+    Client["Client Applications - React / React Native"]:::client
+    LB["Load Balancer - Nginx / Cloudflare"]:::api
     
-    subgraph Online Serving Layer
-        FastAPI["API Gateway<br/>(FastAPI / Uvicorn)"]:::api
-        Redis["Redis Cache<br/>(Session & Model Cache)"]:::db
-        LangGraph["Agentic Router<br/>(LangGraph)"]:::model
-        Groq["LLM Inference<br/>(Groq Llama-3.1)"]:::model
-        VectorStore["Vector DB<br/>(Supabase pgvector)"]:::db
+    subgraph OnlineServing["Online Serving Layer"]
+        FastAPI["API Gateway - FastAPI / Uvicorn"]:::api
+        Redis["Redis Cache - Session & Model Cache"]:::db
+        LangGraph["Agentic Router - LangGraph"]:::model
+        Groq["LLM Inference - Groq Llama-3.1"]:::model
+        VectorStore["Vector DB - Supabase pgvector"]:::db
     end
 
-    subgraph Data & Storage Layer
-        Mongo["Document Store<br/>(MongoDB - Users/Movies)"]:::db
-        S3["Media Blob Storage<br/>(Cloudflare R2)"]:::db
-        FeatureStore["Feature Store<br/>(User Vectors)"]:::db
+    subgraph StorageLayer["Data & Storage Layer"]
+        Mongo["Document Store - MongoDB Users & Movies"]:::db
+        S3["Media Blob Storage - Cloudflare R2"]:::db
+        FeatureStore["Feature Store - User Vectors"]:::db
     end
 
-    subgraph Offline MLOps Pipeline
-        Telemetry["Telemetry Ingestion<br/>(FastAPI BackgroundTasks)"]:::pipeline
-        TrainingJob["Model Training<br/>(APScheduler Cron)"]:::pipeline
-        Eval["Evaluation<br/>(RMSE, NDCG)"]:::pipeline
+    subgraph MLOpsPipeline["Offline MLOps Pipeline"]
+        Telemetry["Telemetry Ingestion - FastAPI BackgroundTasks"]:::pipeline
+        TrainingJob["Model Training - APScheduler Cron"]:::pipeline
+        Eval["Evaluation - RMSE & NDCG"]:::pipeline
         Registry["Model Registry"]:::pipeline
     end
 
     %% Connections
-    Client -->|HTTPS / WSS| LB
+    Client -->|"HTTPS / WSS"| LB
     LB --> FastAPI
     
-    FastAPI <-->|State/Cache| Redis
-    FastAPI <-->|CRUD| Mongo
-    FastAPI <-->|Semantic Queries| VectorStore
-    FastAPI -->|Media Fetch| S3
-    FastAPI <-->|Complex Queries| LangGraph
+    FastAPI <-->|"State & Cache"| Redis
+    FastAPI <-->|"CRUD"| Mongo
+    FastAPI <-->|"Semantic Queries"| VectorStore
+    FastAPI -->|"Media Fetch"| S3
+    FastAPI <-->|"Complex Queries"| LangGraph
     
-    LangGraph <-->|Inference| Groq
-    LangGraph <-->|Tool Execution| FastAPI
+    LangGraph <-->|"Inference"| Groq
+    LangGraph <-->|"Tool Execution"| FastAPI
     
-    Client -.->|Watch Progress Events| Telemetry
+    Client -.->|"Watch Progress Events"| Telemetry
     Telemetry --> FeatureStore
     FeatureStore --> TrainingJob
-    Mongo -.->|Batch Export| TrainingJob
+    Mongo -.->|"Batch Export"| TrainingJob
     TrainingJob --> Eval
-    Eval -->|Deploy if NDCG > threshold| Registry
-    Registry -.->|Load Weights| FastAPI
+    Eval -->|"Deploy if NDCG Pass"| Registry
+    Registry -.->|"Load Weights"| FastAPI
 ```
 
 ---
