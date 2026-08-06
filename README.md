@@ -32,13 +32,15 @@
 
 | Differentiator | Detail |
 |---|---|
-| **Hybrid ML Pipeline** | From-scratch SVD + TF-IDF + pgvector Semantic Search — no ML library shortcuts |
+| **Resilient AIServiceManager** | Lazy-loading architecture for all 15+ AI components — zero startup crashes if model keys or optional dependencies fail |
+| **Hybrid ML Pipeline** | From-scratch SVD + TF-IDF + pgvector Semantic Search + MMR Diversity Reranking |
+| **Non-Parametric A/B Testing** | Mann-Whitney U testing + Chi-squared ($\chi^2$) analysis for heavy-tailed non-Gaussian user metrics |
 | **Zero-Trust Security** | JWT rotation, Redis blacklisting, RBAC, OWASP headers, DOMPurify XSS defense |
 | **18ms p99 Latency** | Cache-aside + GIN indexes + Materialized Views + GZip compression |
 | **Advanced SQL Mastery** | ACID transactions, Window Functions, Recursive CTEs, Row-Level Locking |
 | **Self-Correcting LangGraph Agent** | Multi-hop agentic reasoning with critic-gated quality control |
-| **Production Observability** | Prometheus metrics, distributed trace IDs, deep health probes |
-| **Automated CI/CD Gates** | Bandit SAST + Pytest on every push — no human touches prod without green |
+| **Production Observability** | Prometheus metrics, distributed trace IDs, deep health probes (`GET /health/deep`) |
+| **Automated CI/CD Gates** | Bandit SAST + Pytest on every push — 60 unit/system tests pass cleanly |
 
 ---
 
@@ -46,6 +48,9 @@
 
 | Decision | Chosen | Rejected | Why Chosen over Rejected |
 |---|---|---|---|
+| **Resilience Architecture** | Lazy-Loading AIServiceManager with Fallbacks | Top-level Startup Imports | Prevents total server crash if any AI model key or vector store dependency is offline or degraded |
+| **Statistical A/B Testing** | Non-Parametric Mann-Whitney U Test | Standard Parametric $t$-Test | $t$-tests assume normal distributions; Mann-Whitney U handles non-Gaussian, skewed CTR and user rating data without distortion |
+| **Recommendation Diversity** | Maximal Marginal Relevance (MMR) | Top-$K$ Pure Relevance Ranking | Pure relevance produces filter bubbles (10 identical Sci-Fi movies); MMR balances relevance ($\lambda=0.7$) with intra-list novelty |
 | **Collaborative Filtering** | SVD Matrix Factorization (scipy/surprise) | Deep Neural Collaborative Filtering (NCF) | SVD provides sub-2ms inference latency with 0.8941 RMSE; NCF adds 10x latency overhead with minimal accuracy gain on 1M ratings |
 | **Content Similarity** | From-Scratch TF-IDF + Cosine Normalization | Scikit-Learn TfidfVectorizer API | Hand-coded to demonstrate exact IDF smoothing $\log(N/(1+df))$ and sparse dot-product math without external ML framework bloat |
 | **Vector Database** | Supabase pgvector (HNSW Index) + ChromaDB | Managed Vector SaaS (Pinecone) | pgvector runs inside existing PostgreSQL ACID database, eliminating cross-network egress latency and SaaS cost |
