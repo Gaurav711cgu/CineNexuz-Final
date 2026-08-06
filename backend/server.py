@@ -47,6 +47,9 @@ from sklearn.metrics.pairwise import cosine_similarity
 
 load_dotenv()
 
+# Import AI Service Manager (Lazy Loading & Resilient Startup)
+from ai_service_manager import ai_service_manager
+
 # Import AI modules
 from db_supabase import supabase_db
 from ai.cf_svd import cf_engine
@@ -1278,7 +1281,7 @@ async def health_check():
 
 @app.get("/health/deep")
 async def deep_health_check():
-    """Deep readiness probe testing MongoDB, Redis, and PostgreSQL database connectivity."""
+    """Deep readiness probe testing MongoDB, Redis, PostgreSQL database connectivity, and AI model health."""
     checks = {}
 
     # 1. MongoDB Health
@@ -1308,7 +1311,14 @@ async def deep_health_check():
     except Exception as e:
         checks["postgres"] = {"status": "unhealthy", "error": str(e)}
 
-    all_healthy = all(v["status"] in ["healthy", "degraded"] for v in checks.values())
+    # 4. AI & ML Model Component Health
+    try:
+        ai_health = ai_service_manager.get_health_status()
+        checks["ai_services"] = ai_health
+    except Exception as e:
+        checks["ai_services"] = {"overall_status": "degraded", "error": str(e)}
+
+    all_healthy = all(v.get("status", v.get("overall_status")) in ["healthy", "ok", "degraded"] for v in checks.values())
 
     return {
         "status": "healthy" if all_healthy else "unhealthy",
