@@ -32,6 +32,15 @@
 
 | Differentiator | Detail |
 |---|---|
+| **C4 Model Architecture** | Interactive Mermaid.js System Context, Container & Component diagrams ([`docs/architecture/c4_model.md`](docs/architecture/c4_model.md)) |
+| **Architecture Decision Records** | Formal Nygard-format engineering trade-off documentation ([`docs/adr/`](docs/adr/)) |
+| **Kubernetes Autoscaling Manifests** | EKS/GKE deployment manifests with 3-to-10 pod HPA scaling ([`k8s/`](k8s/)) |
+| **Grafana SRE Metrics Dashboard** | Pre-configured dashboard JSON for QPS, p99 latency, and hit ratio ([`grafana/dashboards/cinenexus_metrics.json`](grafana/dashboards/cinenexus_metrics.json)) |
+| **Alembic Database Migrations** | Zero-downtime database schema versioning & migration framework ([`backend/migrations/`](backend/migrations/)) |
+| **ONNX Runtime Decoupling** | Asynchronous C++ ONNX model inference outside Python GIL ([`backend/ml/onnx_server.py`](backend/ml/onnx_server.py)) |
+| **HNSW Atomic Index Swapper** | Memory-mapped HNSW graph vector index with zero-downtime updates ([`backend/retrieval/hnsw_indexer.py`](backend/retrieval/hnsw_indexer.py)) |
+| **PySpark Offline Batch ETL** | PySpark distributed pipeline for rolling feature extraction ([`scripts/spark_feature_pipeline.py`](scripts/spark_feature_pipeline.py)) |
+| **Playwright E2E UI Suite** | End-to-end browser test automation for auth & streaming ([`frontend/tests/e2e/app.spec.ts`](frontend/tests/e2e/app.spec.ts)) |
 | **Distributed Event Bus** | Async non-blocking EventBus queue (`backend/events/event_bus.py`) with worker pool & DLQ retries |
 | **Singleflight Stampede Protection** | L1/L2 Singleflight mutex locks (`backend/cache/singleflight.py`) to eliminate DB Thundering Herds under 10k QPS |
 | **Zero-Downtime Fallback Shelves** | Instant `< 2ms` pre-computed static JSON shelves (`backend/resilience/fallback_shelves.py`) guaranteeing 0% 500 errors |
@@ -49,7 +58,8 @@
 | **LangGraph Agentic Studio** | Autonomous multi-agent film studio (`backend/ai/langgraph_studio.py`) with Director, Writer, Critic, Storyboard team |
 | **Production AI Guardrails** | Prompt injection threat scanner + token cost analytics (`backend/ai/observability.py`) |
 | **Resilient AIServiceManager** | Lazy-loading architecture for all 15+ AI components — zero startup crashes if dependencies fail |
-| **Automated CI/CD Gates** | Bandit SAST + Pytest on every push — 77 unit/system tests pass cleanly |
+| **Automated CI/CD Security Gates** | Bandit SAST + mypy + ruff + Pytest on every push — 89 unit/system tests pass cleanly |
+
 
 ---
 
