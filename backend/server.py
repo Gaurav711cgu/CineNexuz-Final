@@ -1841,9 +1841,9 @@ async def list_movies(
     page: Optional[int] = Query(None, ge=1),
     genre: Optional[str] = None,
     language: Optional[str] = None,
-    decade: Optional[str] = Query(None, regex="^(1970s|1980s|1990s|2000s|2010s|2020s)$"),
+    decade: Optional[str] = Query(None, pattern="^(1970s|1980s|1990s|2000s|2010s|2020s)$"),
     in_theatres: Optional[bool] = None,
-    sort: str = Query("popularity", regex="^(popularity|vote_average|release_date)$"),
+    sort: str = Query("popularity", pattern="^(popularity|vote_average|release_date)$"),
 ):
     """
     List movies with pagination and filters.
@@ -7032,7 +7032,7 @@ async def analyze_sentiment(req: SentimentRequest):
 
 
 @app.get("/api/movies/{movie_id}/reviews-summary-v2")
-async def get_movie_reviews_summary_v2(movie_id: str, engine: str = Query("huggingface", regex="^(huggingface|openai)$")):
+async def get_movie_reviews_summary_v2(movie_id: str, engine: str = Query("huggingface", pattern="^(huggingface|openai)$")):
     """
     Fetch reviews from TMDB and analyze using HuggingFace sentiment (default) or OpenAI.
     """
