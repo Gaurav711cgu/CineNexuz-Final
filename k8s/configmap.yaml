@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cinenexus-config
+  namespace: cinenexus
+data:
+  PORT: "7860"
+  ENVIRONMENT: "production"
+  ALLOWED_ORIGINS: "https://cinenexus.ai,https://app.cinenexus.ai"
+  FEATURE_FLAGS_ENABLED: "true"
+  CACHE_TTL_SECONDS: "300"

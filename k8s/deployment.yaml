@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cinenexus-backend
+  namespace: cinenexus
+  labels:
+    app: cinenexus-backend
+    tier: api
+spec:
+  replicas: 3
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: cinenexus-backend
+  template:
+    metadata:
+      labels:
+        app: cinenexus-backend
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        fsGroup: 1000
+      containers:
+        - name: backend
+          image: cinenexus/backend:v2.0.0
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 7860
+              name: http
+          envFrom:
+            - configMapRef:
+                name: cinenexus-config
+          resources:
+            requests:
+              cpu: "500m"
+              memory: "1Gi"
+            limits:
+              cpu: "2000m"
+              memory: "4Gi"
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 7860
+            initialDelaySeconds: 15
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 7860
+            initialDelaySeconds: 30
+            periodSeconds: 15
