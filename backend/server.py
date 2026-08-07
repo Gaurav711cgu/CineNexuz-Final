@@ -99,6 +99,15 @@ from metrics.prometheus import (
 )
 from fastapi.middleware.gzip import GZipMiddleware
 
+# Import API v1 Domain Routers
+from api.v1 import auth as v1_auth
+from api.v1 import movies as v1_movies
+from api.v1 import recommendations as v1_recs
+from api.v1 import ai as v1_ai
+from api.v1 import analytics as v1_analytics
+from api.v1 import streaming as v1_streaming
+
+
 # ============================================================
 # Config
 # ============================================================
@@ -1252,6 +1261,15 @@ app.add_middleware(
     allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
     allow_headers=["Authorization", "Content-Type", "Accept", "X-Requested-With", "X-Trace-ID"],
 )
+
+# Mount Domain-Driven API v1 Routers
+app.include_router(v1_auth.router, prefix="/api/v1/auth", tags=["v1 Auth"])
+app.include_router(v1_movies.router, prefix="/api/v1/movies", tags=["v1 Movies"])
+app.include_router(v1_recs.router, prefix="/api/v1/recommendations", tags=["v1 Recommendations"])
+app.include_router(v1_ai.router, prefix="/api/v1/ai", tags=["v1 AI"])
+app.include_router(v1_analytics.router, prefix="/api/v1/analytics", tags=["v1 Analytics"])
+app.include_router(v1_streaming.router, prefix="/api/v1/stream", tags=["v1 Streaming"])
+
 
 
 @app.middleware("http")
