@@ -32,15 +32,19 @@
 
 | Differentiator | Detail |
 |---|---|
-| **Resilient AIServiceManager** | Lazy-loading architecture for all 15+ AI components — zero startup crashes if model keys or optional dependencies fail |
-| **Hybrid ML Pipeline** | From-scratch SVD + TF-IDF + pgvector Semantic Search + MMR Diversity Reranking |
-| **Non-Parametric A/B Testing** | Mann-Whitney U testing + Chi-squared ($\chi^2$) analysis for heavy-tailed non-Gaussian user metrics |
-| **Zero-Trust Security** | JWT rotation, Redis blacklisting, RBAC, OWASP headers, DOMPurify XSS defense |
-| **18ms p99 Latency** | Cache-aside + GIN indexes + Materialized Views + GZip compression |
-| **Advanced SQL Mastery** | ACID transactions, Window Functions, Recursive CTEs, Row-Level Locking |
-| **Self-Correcting LangGraph Agent** | Multi-hop agentic reasoning with critic-gated quality control |
-| **Production Observability** | Prometheus metrics, distributed trace IDs, deep health probes (`GET /health/deep`) |
-| **Automated CI/CD Gates** | Bandit SAST + Pytest on every push — 60 unit/system tests pass cleanly |
+| **Two-Tower PyTorch Retrieval** | Deep Learning User & Item Towers (`backend/ml/two_tower.py`) for sub-10ms candidate retrieval |
+| **SASRec Transformer** | Self-Attention Sequential Transformer (`backend/ml/sasrec.py`) for next-movie watch prediction |
+| **Causal Uplift Modeling** | T-Learner CATE $\tau(x)$ modeling (`backend/ml/causal_uplift.py`) to maximize true incremental watch lift |
+| **LightGCN Graph Neural Net** | Multi-hop heterogeneous GNN (`backend/ml/gnn_recommender.py`) over User/Movie/Director graph nodes |
+| **LinUCB Contextual Bandit** | Upper Confidence Bound exploration-exploitation (`backend/ml/contextual_bandit.py`) for real-time taste learning |
+| **PSI Feature Drift Detector** | Nearline feature store drift monitoring (`backend/feature_store/drift_detector.py`) via PSI & Wasserstein Distance |
+| **Multimodal Visual & Audio Search** | CLIP / SigLIP image poster search + Whisper audio search (`backend/ai/multimodal_search.py`) |
+| **In-Video Temporal Scene RAG** | Subtitle & visual scene chunking (`backend/ai/video_scene_rag.py`) for natural language timestamp jumping |
+| **WebSocket Voice AI Companion** | Full-duplex streaming voice assistant (`backend/ai/voice_companion.py`) with real-time video playback control |
+| **LangGraph Agentic Studio** | Autonomous multi-agent film studio (`backend/ai/langgraph_studio.py`) with Director, Writer, Critic, Storyboard team |
+| **Production AI Guardrails** | Prompt injection threat scanner + token cost analytics (`backend/ai/observability.py`) |
+| **Resilient AIServiceManager** | Lazy-loading architecture for all 15+ AI components — zero startup crashes if dependencies fail |
+| **Automated CI/CD Gates** | Bandit SAST + Pytest on every push — 72 unit/system tests pass cleanly |
 
 ---
 
