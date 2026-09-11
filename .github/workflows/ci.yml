@@ -57,8 +57,8 @@ jobs:
 
       - name: Code Quality & Linter Verification (Ruff & Mypy)
         run: |
-          ruff check backend/api/ backend/ml/ backend/retrieval/ || true
-          mypy backend/api/v1/ --ignore-missing-imports || true
+          ruff check backend/api/ backend/ml/ backend/retrieval/
+          mypy backend/api/v1/ --ignore-missing-imports
 
       - name: Code Syntax Verification
         run: |

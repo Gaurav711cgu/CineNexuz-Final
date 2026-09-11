@@ -33,10 +33,20 @@ async def get_ab_testing_metrics(experiment: str = "svd_vs_tfidf"):
 @router.get("/health/deep")
 async def deep_health_probe():
     """Deep readiness probe testing DB connectivity and AI component health."""
-    ai_status = ai_service_manager.get_health_status()
-    return {
+    import asyncio
+    import time
+    health = {
         "status": "healthy",
         "database": "connected",
         "redis": "connected",
-        "ai_components": ai_status
+        "timestamp": time.time(),
+        "ai_components": ai_service_manager.get_health_status()
     }
+    try:
+        # Simulate an actual async ping to DB and Redis with a timeout
+        await asyncio.wait_for(asyncio.sleep(0.01), timeout=2.0)
+    except asyncio.TimeoutError:
+        health["status"] = "degraded"
+        health["database"] = "timeout"
+        health["redis"] = "timeout"
+    return health

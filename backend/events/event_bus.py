@@ -73,7 +73,8 @@ class DistributedEventBus:
                 handlers = self.handlers.get(event.event_type, [])
                 for h in handlers:
                     try:
-                        if asyncio.iscoroutinefunction(h):
+                        import inspect
+                        if inspect.iscoroutinefunction(h):
                             await h(event)
                         else:
                             h(event)

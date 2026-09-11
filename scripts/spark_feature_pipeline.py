@@ -14,15 +14,17 @@ from typing import List, Dict, Any
 logger = logging.getLogger("spark_feature_pipeline")
 
 
-class PySparkFeatureETLPipeline:
-    """Simulates PySpark distributed ETL pipeline for point-in-time feature extraction."""
+class BatchFeatureETLPipeline:
+    """Local Batch ETL pipeline for point-in-time feature extraction.
+    Designed to easily scale out to Spark if data volume requires distributed processing.
+    """
 
     def __init__(self, app_name: str = "CineNexuz-Feature-ETL"):
         self.app_name = app_name
 
     def process_interaction_batch(self, raw_events: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
         """
-        Executes MapReduce-style aggregation over user interaction events.
+        Executes aggregation over user interaction events.
         
         Computes point-in-time features:
         - 7-day total watch count
@@ -60,12 +62,12 @@ class PySparkFeatureETLPipeline:
         return result
 
     def sync_to_feature_store(self, processed_features: List[Dict[str, Any]]) -> int:
-        """Syncs aggregated PySpark feature vectors into the Redis Feature Store."""
+        """Syncs aggregated feature vectors into the Redis Feature Store."""
         logger.info(f"Syncing {len(processed_features)} user feature vectors to Feature Store.")
         return len(processed_features)
 
 
-spark_pipeline = PySparkFeatureETLPipeline()
+spark_pipeline = BatchFeatureETLPipeline()
 
 if __name__ == "__main__":
     mock_events = [

@@ -48,7 +48,8 @@ class SingleflightGroup:
 
         # Execute fn for the first request
         try:
-            if asyncio.iscoroutinefunction(fn):
+            import inspect
+            if inspect.iscoroutinefunction(fn):
                 res = await fn()
             else:
                 res = fn()
@@ -97,7 +98,8 @@ class TwoTierSingleflightCache:
 
         # 2. Singleflight DB Fetch (prevents stampede)
         async def wrapped_fetch():
-            val = await fetch_fn() if asyncio.iscoroutinefunction(fetch_fn) else fetch_fn()
+            import inspect
+            val = await fetch_fn() if inspect.iscoroutinefunction(fetch_fn) else fetch_fn()
             self.set_l1(key, val, ttl=ttl_sec)
             return val
 

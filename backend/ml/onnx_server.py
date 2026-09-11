@@ -60,8 +60,30 @@ class ONNXInferenceEngine:
                 opts.inter_op_num_threads = 2
                 opts.execution_mode = ort.ExecutionMode.ORT_PARALLEL
                 opts.graph_optimization_level = ort.GraphOptimizationLevel.ORT_ENABLE_ALL
-                self.is_onnx_loaded = True
-                logger.info(f"ONNX Session initialized for {self.model_name}")
+                
+                model_dir = os.path.join(os.path.dirname(__file__), "artifacts")
+                os.makedirs(model_dir, exist_ok=True)
+                model_path = os.path.join(model_dir, f"{self.model_name}.onnx")
+                
+                if not os.path.exists(model_path) and HAS_TORCH:
+                    logger.info(f"Exporting dummy {self.model_name} to ONNX...")
+                    model = DummyTwoTowerPyTorch(embed_dim=self.embed_dim)
+                    model.eval()
+                    dummy_input = torch.randn(1, 32)
+                    torch.onnx.export(
+                        model, dummy_input, model_path,
+                        input_names=["user_features"],
+                        output_names=["embeddings"],
+                        dynamic_axes={"user_features": {0: "batch_size"}, "embeddings": {0: "batch_size"}}
+                    )
+                
+                if os.path.exists(model_path):
+                    self.session = ort.InferenceSession(model_path, opts)
+                    self.is_onnx_loaded = True
+                    logger.info(f"ONNX Session initialized for {self.model_name}")
+                else:
+                    self.is_onnx_loaded = False
+                    logger.warning(f"ONNX model file not found at {model_path}")
             except Exception as e:
                 logger.warning(f"Failed to initialize ONNX session: {e}")
                 self.is_onnx_loaded = False
@@ -73,8 +95,14 @@ class ONNXInferenceEngine:
     def _run_inference_sync(self, features: np.ndarray) -> np.ndarray:
         """Synchronous CPU/GPU inference execution."""
         batch_size = features.shape[0] if len(features.shape) > 1 else 1
-        # Fallback simulation or ONNX execution
-        if HAS_TORCH and self.session is None:
+        
+        if self.session is not None:
+            input_name = self.session.get_inputs()[0].name
+            out = self.session.run(None, {input_name: features.astype(np.float32)})
+            return out[0]
+            
+        # Fallback simulation
+        if HAS_TORCH:
             model = DummyTwoTowerPyTorch(embed_dim=self.embed_dim)
             model.eval()
             with torch.no_grad():

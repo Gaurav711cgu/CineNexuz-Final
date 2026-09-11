@@ -281,10 +281,22 @@ class EvalRunner:
                     llm_response = llm_result.get("choices", [{}])[0].get("message", {}).get("content", "")
                     
                     # 4. Check hallucination: does response mention movies outside retrieved set?
+                    hallucinated = False
                     for bad_movie in should_not_recommend:
                         if bad_movie.lower() in llm_response.lower():
-                            result["hallucination_detected"] = True
+                            hallucinated = True
                             break
+                    
+                    if not hallucinated:
+                        # Extract quoted titles from LLM response (simple heuristic) and check if they exist in retrieved titles
+                        import re
+                        quoted_titles = re.findall(r'"([^"]*)"', llm_response)
+                        retrieved_lower = [t.lower() for t in retrieved_titles]
+                        for qt in quoted_titles:
+                            if qt.lower() not in retrieved_lower and len(qt.split()) < 5:
+                                hallucinated = True
+                                break
+                    result["hallucination_detected"] = hallucinated
                     
                     # 5. Check criteria fulfillment via keyword matching
                     criteria_met = 0
