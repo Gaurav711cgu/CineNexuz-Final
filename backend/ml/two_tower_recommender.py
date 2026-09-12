@@ -1,12 +1,12 @@
-import numpy as np
+import numpy as np  # noqa: I001
 import logging
-from typing import List, Dict, Any, Optional
+from typing import List, Dict, Any, Optional  # noqa: UP035
 
 logger = logging.getLogger(__name__)
 
 try:
-    import torch
-    import torch.nn as nn
+    import torch  # noqa: I001
+    from torch import nn
     import torch.nn.functional as F
     HAS_TORCH = True
 except ImportError:
@@ -136,10 +136,10 @@ class AnnRetrievalEngine:
     for O(log N) retrieval across hundreds of millions of items.
     """
     def __init__(self):
-        self.movie_embeddings: Optional[np.ndarray] = None
-        self.movie_ids: Optional[List[int]] = None
+        self.movie_embeddings: Optional[np.ndarray] = None  # noqa: UP007
+        self.movie_ids: Optional[List[int]] = None  # noqa: UP006, UP007
 
-    def build_index(self, movie_embeddings: np.ndarray, movie_ids: List[int]):
+    def build_index(self, movie_embeddings: np.ndarray, movie_ids: List[int]):  # noqa: UP006
         """Stores pre-computed candidate embeddings (run offline, not in serving path)."""
         # L2 normalize for cosine similarity via dot product
         norms = np.linalg.norm(movie_embeddings, axis=1, keepdims=True)
@@ -147,7 +147,7 @@ class AnnRetrievalEngine:
         self.movie_ids = movie_ids
         logger.info(f"ANN index built with {len(movie_ids)} movie embeddings.")
 
-    def retrieve_top_k(self, query_embedding: np.ndarray, k: int = 20) -> List[Dict[str, Any]]:
+    def retrieve_top_k(self, query_embedding: np.ndarray, k: int = 20) -> List[Dict[str, Any]]:  # noqa: UP006
         """O(N) brute-force cosine similarity (use FAISS HNSW in production for O(log N))."""
         if self.movie_embeddings is None:
             return []

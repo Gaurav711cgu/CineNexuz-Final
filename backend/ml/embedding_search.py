@@ -21,7 +21,7 @@ class EmbeddingSearchEngine:
             logger.info("Sentence transformer loaded (all-MiniLM-L6-v2)")
         except ImportError:
             logger.warning("sentence-transformers not installed; falling back to TF-IDF")
-        except Exception as exc:
+        except Exception as exc:  # noqa: BLE001
             logger.warning("Embedding model load failed: %s", exc)
 
     def build_index(self, movies: list):

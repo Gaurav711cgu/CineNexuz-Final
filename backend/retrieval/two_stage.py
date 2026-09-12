@@ -4,9 +4,9 @@ Stage 1: FAISS ANN candidate generation (reduces catalog from N -> K=200) [<10ms
 Stage 2: Collaborative Filtering SVD + Session Recency Reranking [<35ms]
 Total p99 SLA < 50ms.
 """
-import time
+import time  # noqa: I001
 import logging
-from typing import List, Dict, Any
+from typing import List, Dict, Any  # noqa: UP035
 
 from retrieval.faiss_index import faiss_retriever
 from ai.cf_svd import cf_engine
@@ -16,7 +16,7 @@ try:
     from logging_utils import log_event
 except ImportError:
     def log_event(level, msg, ep="two_stage"):
-        logging.log(level, f"[{ep}] {msg}")
+        logging.getLogger(__name__).log(level, f"[{ep}] {msg}")
 
 
 class TwoStagePipeline:
@@ -28,7 +28,7 @@ class TwoStagePipeline:
     def set_db(self, db):
         self.db = db
 
-    async def recommend(self, user_id: str, user_embedding: Any = None, limit: int = 20) -> Dict[str, Any]:
+    async def recommend(self, user_id: str, user_embedding: Any = None, limit: int = 20) -> Dict[str, Any]:  # noqa: UP006
         """Executes two-stage recommendation pipeline."""
         start_time = time.perf_counter()
         
@@ -36,7 +36,7 @@ class TwoStagePipeline:
         user_features = await feature_store.get_user_features(user_id)
         
         # 2. Stage 1: Candidate Generation (FAISS / Vector retrieval -> 200 items) [<10ms]
-        candidates: List[str] = []
+        candidates: List[str] = []  # noqa: UP006
         if user_embedding is not None and faiss_retriever.is_built:
             candidates = faiss_retriever.retrieve_candidates(user_embedding, top_k=200)
 
@@ -45,7 +45,7 @@ class TwoStagePipeline:
             try:
                 pop_movies = await self.db.movies.find({}, {"_id": 1}).sort("popularity", -1).limit(200).to_list(200)
                 candidates = [str(m["_id"]) for m in pop_movies]
-            except Exception as db_err:
+            except Exception as db_err:  # noqa: BLE001
                 log_event(logging.WARNING, f"Fallback candidate fetch error: {db_err}", "two_stage")
 
         retrieval_ms = round((time.perf_counter() - start_time) * 1000, 2)

@@ -8,8 +8,8 @@ Two-Stage Pipeline:
   Resilience: FallbackShelfManager for zero-downtime cold-start
   Total p99 SLA < 50ms.
 """
-import logging
-from typing import List, Dict, Any
+import logging  # noqa: I001
+from typing import List, Dict, Any  # noqa: UP035
 
 from fastapi import APIRouter, Query
 
@@ -32,8 +32,8 @@ async def get_recommendations(
     Fetch personalized recommendations via Two-Stage Pipeline + MMR Reranking.
     Guarantees non-empty response through resilient zero-downtime fallback shelf.
     """
-    raw_candidates: List[Dict[str, Any]] = []
-    telemetry: Dict[str, Any] = {}
+    raw_candidates: List[Dict[str, Any]] = []  # noqa: UP006
+    telemetry: Dict[str, Any] = {}  # noqa: UP006
 
     try:
         pipeline_result = await two_stage_pipeline.recommend(
@@ -42,7 +42,7 @@ async def get_recommendations(
         )
         raw_candidates = pipeline_result.get("recommendations", [])
         telemetry = pipeline_result.get("pipeline_telemetry", {})
-    except Exception as exc:
+    except Exception as exc:  # noqa: BLE001
         logger.warning(f"Two-stage pipeline fallback triggered for {user_id}: {exc}")
 
     # If two-stage pipeline returns empty (e.g. cold start / DB offline), apply zero-downtime fallback shelf

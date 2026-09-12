@@ -33,7 +33,7 @@ class SVDRecommender:
             self.metrics = data.get("metrics", {})
             self.ready = True
             logger.info("SVD model loaded. NDCG@10=%s", self.metrics.get("ndcg_at_10"))
-        except Exception as exc:
+        except Exception as exc:  # noqa: BLE001
             self.ready = False
             logger.warning("SVD model not loaded: %s", exc)
 

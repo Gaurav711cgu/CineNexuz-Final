@@ -26,7 +26,7 @@ async def seed():
     db = client[os.environ.get("DB_NAME", "cinenexus")]
 
     print("Downloading MovieLens 1M...")
-    with urllib.request.urlopen("https://files.grouplens.org/datasets/movielens/ml-1m.zip") as response:  # nosec B310 — URL is a hardcoded https constant, not user input
+    with urllib.request.urlopen("https://files.grouplens.org/datasets/movielens/ml-1m.zip") as response:  # nosec B310 — URL is a hardcoded https constant, not user input  # noqa: S310
         archive = zipfile.ZipFile(io.BytesIO(response.read()))
     ratings = pd.read_csv(
         archive.open("ml-1m/ratings.dat"),
@@ -53,7 +53,7 @@ async def seed():
     print(f"Matched {len(ml_to_mongo)} MovieLens titles to catalog movies")
 
     inserted = 0
-    password = bcrypt.hashpw("synthetic-demo".encode(), bcrypt.gensalt()).decode()
+    password = bcrypt.hashpw("synthetic-demo".encode(), bcrypt.gensalt()).decode()  # noqa: UP012
     top_users = ratings["userId"].value_counts().head(500).index.tolist()
     for ml_user_id in top_users:
         email = f"ml_user_{ml_user_id}@synthetic.cinenexus"
@@ -77,11 +77,11 @@ async def seed():
             mongo_id = ml_to_mongo.get(int(row["movieId"]))
             if not mongo_id:
                 continue
-            completed = float(row["rating"]) >= 3.5
+            completed = float(row["rating"]) >= 3.5  # noqa: PLR2004
             event = {
                 "user_id": user_id,
                 "movie_id": mongo_id,
-                "progress_seconds": random.randint(3600, 7200) if completed else random.randint(600, 3000),
+                "progress_seconds": random.randint(3600, 7200) if completed else random.randint(600, 3000),  # noqa: S311
                 "total_duration": 7200,
                 "completed": completed,
                 "updated_at": datetime.fromtimestamp(int(row["timestamp"]), timezone.utc),

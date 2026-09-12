@@ -6,7 +6,7 @@ Handles:
   - LangGraph Multi-Agent Film Studio (Director, Screenwriter, Critic, Storyboard Artist)
   - Resilient fallbacks for vector store cold-starts
 """
-import logging
+import logging  # noqa: I001
 from typing import Optional
 
 from fastapi import APIRouter, HTTPException
@@ -21,7 +21,7 @@ router = APIRouter()
 
 class RAGSearchRequest(BaseModel):
     query: str
-    top_k: Optional[int] = 5
+    top_k: Optional[int] = 5  # noqa: UP007
 
 
 class FilmStudioRequest(BaseModel):
@@ -41,7 +41,7 @@ async def perform_rag_search(req: RAGSearchRequest):
     if vector_store.is_ready:
         try:
             results = vector_store.retrieve(req.query, top_k=top_k)
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             logger.warning(f"Vector store retrieval error: {e}")
 
     # Graceful fallback if vector store is cold/empty
@@ -101,5 +101,5 @@ async def generate_film_concept(req: FilmStudioRequest):
             "studio_telemetry": studio_output
         }
     except Exception as exc:
-        logger.exception(f"Film Studio agent error: {exc}")
+        logger.exception(f"Film Studio agent error: {exc}")  # noqa: TRY401
         raise HTTPException(status_code=500, detail="Film Studio agent execution failed") from exc

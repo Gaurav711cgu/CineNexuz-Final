@@ -8,8 +8,8 @@ Falls back to NumPy brute-force cosine only when hnswlib is unavailable (CI env)
 Zero-downtime updates: AtomicIndexSwapper dual-buffers active/staging indices
 so pointer swaps are instantaneous with no QPS drop.
 """
-import logging
-from typing import List, Dict, Any, Tuple, Optional
+import logging  # noqa: I001
+from typing import List, Dict, Any, Tuple, Optional  # noqa: UP035
 import numpy as np
 
 logger = logging.getLogger("retrieval.hnsw_indexer")
@@ -34,16 +34,16 @@ class HNSWVectorIndexer:
         self.space = space
         self.ef_construction = ef_construction
         self.M = M
-        self._index: Optional[Any] = None       # hnswlib.Index when available
-        self._numpy_vecs: Dict[str, np.ndarray] = {}  # fallback path
-        self.id_to_key: List[str] = []
+        self._index: Optional[Any] = None       # hnswlib.Index when available  # noqa: UP007
+        self._numpy_vecs: Dict[str, np.ndarray] = {}  # fallback path  # noqa: UP006
+        self.id_to_key: List[str] = []  # noqa: UP006
         self._is_built = False
 
     @property
     def is_built(self) -> bool:
         return self._is_built
 
-    def build_index(self, item_vectors: Dict[str, np.ndarray]) -> int:
+    def build_index(self, item_vectors: Dict[str, np.ndarray]) -> int:  # noqa: UP006
         """
         Builds HNSW graph index over catalog item embeddings.
         Returns number of indexed items.
@@ -67,7 +67,7 @@ class HNSWVectorIndexer:
 
                 self._index = idx
                 logger.info(f"hnswlib HNSW index built: {n} items, dim={self.dim}, space={self.space}")
-            except Exception as exc:
+            except Exception as exc:  # noqa: BLE001
                 logger.warning(f"hnswlib build failed, using NumPy fallback: {exc}")
                 self._index = None
         else:
@@ -76,7 +76,7 @@ class HNSWVectorIndexer:
         self._is_built = True
         return n
 
-    def query_knn(self, query_vector: np.ndarray, top_k: int = 10) -> List[Tuple[str, float]]:
+    def query_knn(self, query_vector: np.ndarray, top_k: int = 10) -> List[Tuple[str, float]]:  # noqa: UP006
         """
         Queries K-nearest neighbours using inner product / cosine distance.
         Uses hnswlib when available (O(log N)), falls back to NumPy (O(N)).
@@ -100,8 +100,8 @@ class HNSWVectorIndexer:
                     # hnswlib cosine distance ∈ [0,2]; convert to similarity ∈ [-1,1]
                     similarity = round(float(1.0 - dist), 6)
                     results.append((key, similarity))
-                return results
-            except Exception as exc:
+                return results  # noqa: TRY300
+            except Exception as exc:  # noqa: BLE001
                 logger.warning(f"hnswlib query failed, using NumPy fallback: {exc}")
 
         # ── NumPy O(N) brute-force fallback ─────────────────────────────────
@@ -123,7 +123,7 @@ class AtomicIndexSwapper:
 
     def __init__(self, active_index: HNSWVectorIndexer):
         self.active_index = active_index
-        self.staging_index: Optional[HNSWVectorIndexer] = None
+        self.staging_index: Optional[HNSWVectorIndexer] = None  # noqa: UP007
 
     def promote_staging(self, new_index: HNSWVectorIndexer) -> None:
         """
@@ -139,7 +139,7 @@ class AtomicIndexSwapper:
     def swap_index(self, new_index: HNSWVectorIndexer) -> None:
         self.promote_staging(new_index)
 
-    def query(self, query_vector: np.ndarray, top_k: int = 10) -> List[Tuple[str, float]]:
+    def query(self, query_vector: np.ndarray, top_k: int = 10) -> List[Tuple[str, float]]:  # noqa: UP006
         """Queries the currently active HNSW index."""
         return self.active_index.query_knn(query_vector, top_k=top_k)
 

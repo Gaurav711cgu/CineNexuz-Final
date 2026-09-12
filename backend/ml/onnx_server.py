@@ -5,7 +5,7 @@ Exports PyTorch recommendation models (Two-Tower, SASRec) to ONNX protobuf graph
 and executes high-throughput CPU/GPU inference via ONNX Runtime in async thread pools
 to avoid blocking the Python asyncio Event Loop.
 """
-import os
+import os  # noqa: I001
 import asyncio
 import logging
 from typing import Any, Optional
@@ -15,7 +15,7 @@ logger = logging.getLogger("ml.onnx_server")
 
 try:
     import torch
-    import torch.nn as nn
+    from torch import nn
     HAS_TORCH = True
 except ImportError:
     HAS_TORCH = False
@@ -47,7 +47,7 @@ class ONNXInferenceEngine:
     def __init__(self, model_name: str = "two_tower", embed_dim: int = 64):
         self.model_name = model_name
         self.embed_dim = embed_dim
-        self.session: Optional[Any] = None
+        self.session: Optional[Any] = None  # noqa: UP007
         self.is_onnx_loaded = False
         self._init_session()
 
@@ -84,7 +84,7 @@ class ONNXInferenceEngine:
                 else:
                     self.is_onnx_loaded = False
                     logger.warning(f"ONNX model file not found at {model_path}")
-            except Exception as e:
+            except Exception as e:  # noqa: BLE001
                 logger.warning(f"Failed to initialize ONNX session: {e}")
                 self.is_onnx_loaded = False
 

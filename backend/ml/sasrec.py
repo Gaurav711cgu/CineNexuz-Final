@@ -5,13 +5,13 @@ Predicts the next movie a user will watch based on their chronological viewing s
 Uses multi-head self-attention, positional embeddings, and point-wise Feed-Forward Networks.
 """
 
-import math
+import math  # noqa: I001
 import logging
 import numpy as np
 import torch
-import torch.nn as nn
+from torch import nn
 import torch.nn.functional as F
-from typing import Tuple, Optional, List
+from typing import Tuple, Optional, List  # noqa: UP035
 
 logger = logging.getLogger("ml.sasrec")
 
@@ -31,7 +31,7 @@ class MultiHeadSelfAttention(nn.Module):
         self.out_proj = nn.Linear(hidden_units, hidden_units)
         self.dropout = nn.Dropout(dropout_rate)
 
-    def forward(self, queries: torch.Tensor, keys: torch.Tensor, mask: Optional[torch.Tensor] = None) -> torch.Tensor:
+    def forward(self, queries: torch.Tensor, keys: torch.Tensor, mask: Optional[torch.Tensor] = None) -> torch.Tensor:  # noqa: UP007
         B, S, _ = queries.size()
 
         Q = self.q_linear(queries).view(B, S, self.num_heads, self.head_dim).transpose(1, 2)
@@ -53,7 +53,7 @@ class MultiHeadSelfAttention(nn.Module):
 class SASRecModel(nn.Module):
     """Self-Attention Sequential Recommendation Transformer."""
 
-    def __init__(
+    def __init__(  # noqa: PLR0913
         self,
         item_count: int = 1000,
         max_seq_length: int = 20,
@@ -114,7 +114,7 @@ class SASRecRecommender:
         self.model = SASRecModel(item_count=item_count, max_seq_length=max_len, hidden_units=hidden_dim)
         self.model.eval()
 
-    def predict_next_item_scores(self, sequence_item_ids: List[int], top_k: int = 10) -> List[Tuple[int, float]]:
+    def predict_next_item_scores(self, sequence_item_ids: List[int], top_k: int = 10) -> List[Tuple[int, float]]:  # noqa: UP006
         """Predicts the most probable next items given historical sequence."""
         self.model.eval()
         seq = sequence_item_ids[-self.max_len:]

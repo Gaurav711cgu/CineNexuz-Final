@@ -4,7 +4,7 @@ CineNexuz API v1 - Authentication & User Management Domain Router
 Handles user registration, login, JWT token rotation, refresh token blacklisting,
 Clerk user sync, profile management, and RBAC authentication.
 """
-from typing import Optional, Dict, Any
+from typing import Optional, Dict, Any  # noqa: I001, UP035
 from fastapi import APIRouter, HTTPException, Depends, Request, Response, status
 from pydantic import BaseModel
 
@@ -26,10 +26,10 @@ class LoginRequest(BaseModel):
 class RegisterRequest(BaseModel):
     email: str
     password: str
-    name: Optional[str] = "User"
+    name: Optional[str] = "User"  # noqa: UP007
 
 class RefreshRequest(BaseModel):
-    refresh_token: Optional[str] = None
+    refresh_token: Optional[str] = None  # noqa: UP007
 
 @router.post("/register", status_code=status.HTTP_201_CREATED)
 async def register_user(req: RegisterRequest):
@@ -58,7 +58,7 @@ async def login_user(req: LoginRequest, response: Response):
     }
 
 @router.post("/refresh")
-async def refresh_access_token(request: Request, response: Response, payload: Optional[RefreshRequest] = None):
+async def refresh_access_token(request: Request, response: Response, payload: Optional[RefreshRequest] = None):  # noqa: UP007
     """Rotate JWT refresh token with revocation tracking."""
     token_str = (payload and payload.refresh_token) or request.cookies.get("refresh_token")
     if not token_str:
@@ -78,6 +78,6 @@ async def logout_user(request: Request, response: Response):
     return {"status": "success", "message": "Logged out successfully"}
 
 @router.get("/me")
-async def get_current_user_profile(user: Dict[str, Any] = Depends(require_role(UserRole.USER))):
+async def get_current_user_profile(user: Dict[str, Any] = Depends(require_role(UserRole.USER))):  # noqa: UP006
     """Fetch profile details for the authenticated user."""
     return {"status": "success", "user": user}

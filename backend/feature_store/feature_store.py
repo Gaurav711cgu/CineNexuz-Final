@@ -18,7 +18,7 @@ try:
     from logging_utils import log_event
 except ImportError:
     def log_event(level, msg, ep="feature_store"):
-        logging.log(level, f"[{ep}] {msg}")
+        logging.getLogger(__name__).log(level, f"[{ep}] {msg}")
 
 
 class FeatureStore:

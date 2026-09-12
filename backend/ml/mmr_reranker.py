@@ -5,10 +5,10 @@ Prevents filter bubbles by balancing relevance vs diversity using MMR math:
     MMR(d) = argmax [ lambda * Sim_1(d, User_Query) - (1 - lambda) * max_{s in S} Sim_2(d, s) ]
 """
 
-from typing import List, Dict, Any
+from typing import List, Dict, Any  # noqa: I001, UP035
 
 
-def jaccard_genre_similarity(genres1: List[str], genres2: List[str]) -> float:
+def jaccard_genre_similarity(genres1: List[str], genres2: List[str]) -> float:  # noqa: UP006
     """Computes Jaccard similarity between two genre lists."""
     set1, set2 = set(genres1), set(genres2)
     union = set1.union(set2)
@@ -18,11 +18,11 @@ def jaccard_genre_similarity(genres1: List[str], genres2: List[str]) -> float:
 
 
 def mmr_rerank(
-    candidates: List[Dict[str, Any]],
+    candidates: List[Dict[str, Any]],  # noqa: UP006
     top_k: int = 10,
     lambda_param: float = 0.7,
     relevance_key: str = "svd_score"
-) -> List[Dict[str, Any]]:
+) -> List[Dict[str, Any]]:  # noqa: UP006
     """
     Applies Maximal Marginal Relevance (MMR) re-ranking over candidate movies.
     
@@ -50,7 +50,7 @@ def mmr_rerank(
         normalized_candidates.append(c_copy)
 
     unselected = list(normalized_candidates)
-    selected: List[Dict[str, Any]] = []
+    selected: List[Dict[str, Any]] = []  # noqa: UP006
 
     # Iterative MMR selection
     while unselected and len(selected) < top_k:

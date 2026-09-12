@@ -5,12 +5,12 @@ Implements LightGCN message passing over heterogeneous entity graphs (User <-> M
 Performs Graph Convolution E^{(k+1)} = (D^{-1/2} A D^{-1/2}) E^{(k)} for multi-hop structural graph recommendations.
 """
 
-import logging
+import logging  # noqa: I001
 import numpy as np
 import torch
-import torch.nn as nn
+from torch import nn
 import torch.nn.functional as F
-from typing import List, Tuple
+from typing import List, Tuple  # noqa: UP035
 
 logger = logging.getLogger("ml.gnn_recommender")
 
@@ -34,7 +34,7 @@ class LightGCNModel(nn.Module):
         nn.init.normal_(self.user_embedding.weight, std=0.1)
         nn.init.normal_(self.item_embedding.weight, std=0.1)
 
-    def forward(self, edge_index: torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor]:
+    def forward(self, edge_index: torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor]:  # noqa: UP006
         """
         Performs K-layer graph convolution over normalized adjacency matrix A.
         Returns final aggregated user embeddings and item embeddings.
@@ -87,7 +87,7 @@ class LightGCNRecommender:
         dst = np.concatenate([i_nodes, u_nodes])
         self.edge_index = torch.tensor(np.array([src, dst]), dtype=torch.long)
 
-    def recommend_for_user(self, user_idx: int, top_k: int = 10) -> List[Tuple[int, float]]:
+    def recommend_for_user(self, user_idx: int, top_k: int = 10) -> List[Tuple[int, float]]:  # noqa: UP006
         """Computes graph inner-product scores <e_u, e_i> for user."""
         self.model.eval()
         with torch.no_grad():

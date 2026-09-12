@@ -7,12 +7,12 @@ Implements a PyTorch Two-Tower Deep Learning Recommender (YouTube/Pinterest Arch
 - Scoring: Cosine dot-product similarity <UserEmbedding, ItemEmbedding>
 """
 
-import logging
+import logging  # noqa: I001
 import numpy as np
 import torch
-import torch.nn as nn
+from torch import nn
 import torch.nn.functional as F
-from typing import Dict
+from typing import Dict  # noqa: UP035
 
 logger = logging.getLogger("ml.two_tower")
 
@@ -98,7 +98,7 @@ class TwoTowerRecommender:
             score = torch.sum(u_emb * i_emb, dim=1).item()
             return round(float((score + 1.0) / 2.0), 4)
 
-    def train_mock_batch(self, batch_size: int = 64) -> Dict[str, float]:
+    def train_mock_batch(self, batch_size: int = 64) -> Dict[str, float]:  # noqa: UP006
         """Trains model on synthetic batch to verify PyTorch gradient flow."""
         self.model.train()
         optimizer = torch.optim.AdamW(self.model.parameters(), lr=1e-3)

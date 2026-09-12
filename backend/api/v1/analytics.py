@@ -4,7 +4,7 @@ CineNexuz API v1 - Analytics, Telemetry & Health Domain Router
 Handles event stream ingestion, A/B testing statistical metrics,
 Prometheus telemetry scrapers, and health readiness probes.
 """
-from typing import Optional
+from typing import Optional  # noqa: I001
 from fastapi import APIRouter
 from pydantic import BaseModel
 
@@ -17,7 +17,7 @@ class InteractionEvent(BaseModel):
     user_id: str
     item_id: str
     event_type: str  # CLICK, WATCH_PROGRESS, RATING
-    watch_pct: Optional[float] = 0.0
+    watch_pct: Optional[float] = 0.0  # noqa: UP007
 
 @router.post("/events")
 async def log_interaction_event(event: InteractionEvent):

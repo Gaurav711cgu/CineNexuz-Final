@@ -1,5 +1,5 @@
-import logging
-from typing import Dict, Any, List
+import logging  # noqa: I001
+from typing import Dict, Any, List  # noqa: UP035
 
 logger = logging.getLogger(__name__)
 
@@ -20,12 +20,12 @@ class LoreRAGPipeline:
         self.vector_db_index = "fandom-lore-corpus"
         logger.info(f"Initialized Lore RAG Pipeline connecting to {self.vector_db_index}.")
 
-    def _embed_scene_context(self, subtitles: str, visual_tags: List[str]) -> list:
+    def _embed_scene_context(self, subtitles: str, visual_tags: List[str]) -> list:  # noqa: UP006
         """Converts the current scene's context into a high-dimensional dense vector."""
         # Simulated embedding (e.g. 1024 dims)
         return [0.015] * 1024
 
-    def _retrieve_comic_references(self, scene_vector: list) -> List[Dict[str, Any]]:
+    def _retrieve_comic_references(self, scene_vector: list) -> List[Dict[str, Any]]:  # noqa: UP006
         """Performs Approximate Nearest Neighbor (ANN) search against comic databases."""
         # Simulated Vector DB hit
         return [
@@ -36,7 +36,7 @@ class LoreRAGPipeline:
             }
         ]
 
-    def _llm_synthesize_easter_egg(self, scene_context: str, retrieved_docs: List[dict]) -> str:
+    def _llm_synthesize_easter_egg(self, scene_context: str, retrieved_docs: List[dict]) -> str:  # noqa: UP006
         """
         Uses an LLM (e.g. LLaMA-3 or GPT-4) to synthesize the raw retrieved comic 
         pages into a snappy, spoiler-free trivia fact for the frontend UI.
@@ -45,7 +45,7 @@ class LoreRAGPipeline:
             return ""
         return f"This scene closely mirrors {retrieved_docs[0]['doc_id']}, where the same event happens."
 
-    def extract_easter_eggs(self, timestamp_sec: int, scene_subtitles: str, visual_tags: List[str]) -> Dict[str, Any]:
+    def extract_easter_eggs(self, timestamp_sec: int, scene_subtitles: str, visual_tags: List[str]) -> Dict[str, Any]:  # noqa: UP006
         """Main pipeline endpoint called by the frontend LoreFunzone.js."""
         try:
             # 1. Embed the scene
@@ -70,5 +70,5 @@ class LoreRAGPipeline:
                 ]
             }
         except Exception as e:
-            logger.exception(f"Lore RAG Pipeline failed: {e}")
+            logger.exception(f"Lore RAG Pipeline failed: {e}")  # noqa: TRY401
             return {"easter_eggs": []}

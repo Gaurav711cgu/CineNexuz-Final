@@ -11,7 +11,7 @@ try:
     from logging_utils import log_event
 except ImportError:
     def log_event(level, msg, ep="nearline"):
-        logging.log(level, f"[{ep}] {msg}")
+        logging.getLogger(__name__).log(level, f"[{ep}] {msg}")
 
 
 async def process_movie_watched_event(event_payload: Dict[str, Any], db=None) -> Dict[str, Any]:

@@ -33,7 +33,7 @@ os.makedirs(ARTIFACTS_DIR, exist_ok=True)
 def download_movielens_1m():
     url = "https://files.grouplens.org/datasets/movielens/ml-1m.zip"
     logger.info("Downloading MovieLens 1M...")
-    with urllib.request.urlopen(url) as response:  # nosec B310 — URL is a hardcoded https constant sourced from a trusted variable, not user input
+    with urllib.request.urlopen(url) as response:  # nosec B310 — URL is a hardcoded https constant sourced from a trusted variable, not user input  # noqa: S310
         archive = zipfile.ZipFile(io.BytesIO(response.read()))
 
     ratings = pd.read_csv(
@@ -88,7 +88,7 @@ def train_svd(ratings: pd.DataFrame, n_factors: int = 50):
     for user_id, group in test_df.groupby("userId"):
         relevant = {
             movie_idx[movie_id]
-            for movie_id in group[group["rating"] >= 4]["movieId"]
+            for movie_id in group[group["rating"] >= 4]["movieId"]  # noqa: PLR2004
             if movie_id in movie_idx
         }
         if not relevant:
@@ -117,7 +117,7 @@ def train_svd(ratings: pd.DataFrame, n_factors: int = 50):
     return user_factors, item_factors, user_idx, movie_idx, metrics
 
 
-def save_artifacts(user_factors, item_factors, user_idx, movie_idx, metrics, movies_df):
+def save_artifacts(user_factors, item_factors, user_idx, movie_idx, metrics, movies_df):  # noqa: PLR0913
     np.save(os.path.join(ARTIFACTS_DIR, "user_factors.npy"), user_factors)
     np.save(os.path.join(ARTIFACTS_DIR, "item_factors.npy"), item_factors)
     idx_to_movie = {int(idx): int(movie_id) for movie_id, idx in movie_idx.items()}

@@ -13,7 +13,7 @@ try:
     from logging_utils import log_event
 except ImportError:
     def log_event(level, msg, ep="nearline_worker"):
-        logging.log(level, f"[{ep}] {msg}")
+        logging.getLogger(__name__).log(level, f"[{ep}] {msg}")
 
 
 class NearlineWorker:

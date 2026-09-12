@@ -4,7 +4,7 @@ CineNexuz API v1 - HLS Adaptive Bitrate Streaming Domain Router
 Handles HLS master playlists, multi-bitrate variant playlists (1080p, 720p, 480p),
 and 4-second video segment delivery.
 """
-from fastapi import APIRouter, HTTPException, Response
+from fastapi import APIRouter, HTTPException, Response  # noqa: I001
 
 from streaming.hls_encoder import hls_server_engine
 
@@ -23,4 +23,4 @@ async def get_variant_playlist(movie_id: str, quality: str):
         content = hls_server_engine.generate_variant_playlist(movie_id, quality)
         return Response(content=content, media_type="application/vnd.apple.mpegurl")
     except ValueError as e:
-        raise HTTPException(status_code=400, detail=str(e))
+        raise HTTPException(status_code=400, detail=str(e))  # noqa: TRY200

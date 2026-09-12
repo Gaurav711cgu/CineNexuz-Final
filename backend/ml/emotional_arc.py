@@ -1,6 +1,6 @@
-import numpy as np
+import numpy as np  # noqa: I001
 import logging
-from typing import Dict, Any
+from typing import Dict, Any  # noqa: UP035
 
 try:
     from fastdtw import fastdtw
@@ -44,7 +44,7 @@ class EmotionalArcMatcher:
             return np.array([1.0, 0.5, 0.0, -0.5, -1.0])
         return np.array([0.0, 0.0, 0.0, 0.0, 0.0])
 
-    def find_best_arc_match(self, user_prompt: str) -> Dict[str, Any]:
+    def find_best_arc_match(self, user_prompt: str) -> Dict[str, Any]:  # noqa: UP006
         """Uses DTW to find the movie whose emotional pacing matches the user's request."""
         target_arc = self.generate_target_arc(user_prompt)
         

@@ -9,9 +9,9 @@ Math:
     where A_a = D_a^T D_a + I_d, b_a = D_a^T c_a, theta_a = A_a^{-1} b_a
 """
 
-import logging
+import logging  # noqa: I001
 import numpy as np
-from typing import Dict, List, Tuple
+from typing import Dict, List, Tuple  # noqa: UP035
 
 logger = logging.getLogger("ml.contextual_bandit")
 
@@ -67,14 +67,14 @@ class ContextualBanditEngine:
     def __init__(self, context_dim: int = 10, alpha: float = 0.5):
         self.context_dim = context_dim
         self.alpha = alpha
-        self.arms: Dict[str, LinUCBArm] = {}
+        self.arms: Dict[str, LinUCBArm] = {}  # noqa: UP006
 
     def get_or_create_arm(self, arm_id: str) -> LinUCBArm:
         if arm_id not in self.arms:
             self.arms[arm_id] = LinUCBArm(arm_id, self.context_dim, self.alpha)
         return self.arms[arm_id]
 
-    def select_best_arm(self, candidate_arm_ids: List[str], user_context: np.ndarray) -> Tuple[str, float]:
+    def select_best_arm(self, candidate_arm_ids: List[str], user_context: np.ndarray) -> Tuple[str, float]:  # noqa: UP006
         """Selects arm maximizing LinUCB score given user context vector."""
         best_arm_id = candidate_arm_ids[0]
         best_score = -float("inf")

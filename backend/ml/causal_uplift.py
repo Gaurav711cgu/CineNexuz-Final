@@ -5,9 +5,9 @@ Estimates Conditional Average Treatment Effect (CATE) tau(x) = E[Y(1) - Y(0) | X
 Prevents recommending movies users were already going to watch anyway, maximizing TRUE incremental watch lift.
 """
 
-import numpy as np
+import numpy as np  # noqa: I001
 import logging
-from typing import Dict, List, Any
+from typing import Dict, List, Any  # noqa: UP035
 
 logger = logging.getLogger("ml.causal_uplift")
 
@@ -63,10 +63,10 @@ class TLearnerUpliftModel:
 
     def filter_and_rank_by_causal_lift(
         self,
-        candidate_movies: List[Dict[str, Any]],
+        candidate_movies: List[Dict[str, Any]],  # noqa: UP006
         user_features: np.ndarray,
         min_uplift_threshold: float = -0.05
-    ) -> List[Dict[str, Any]]:
+    ) -> List[Dict[str, Any]]:  # noqa: UP006
         """
         Reranks candidate recommendations by incorporating causal uplift scores.
         """

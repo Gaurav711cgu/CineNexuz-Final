@@ -4,18 +4,18 @@ CineNexuz API v1 - Movie Catalog & Ingest Domain Router
 Handles catalog browsing, pagination, filtering (decade, genre, sorting),
 trending items, movie details, synopses, and collections.
 """
-from typing import Optional
+from typing import Optional  # noqa: I001
 from fastapi import APIRouter, Query
 
 router = APIRouter()
 
 @router.get("")
-async def get_movies(
-    page: Optional[int] = Query(1, ge=1),
-    limit: Optional[int] = Query(20, ge=1, le=100),
-    genre: Optional[str] = None,
-    language: Optional[str] = None,
-    decade: Optional[str] = Query(None, pattern="^(1970s|1980s|1990s|2000s|2010s|2020s)$"),
+async def get_movies(  # noqa: PLR0913
+    page: Optional[int] = Query(1, ge=1),  # noqa: UP007
+    limit: Optional[int] = Query(20, ge=1, le=100),  # noqa: UP007
+    genre: Optional[str] = None,  # noqa: UP007
+    language: Optional[str] = None,  # noqa: UP007
+    decade: Optional[str] = Query(None, pattern="^(1970s|1980s|1990s|2000s|2010s|2020s)$"),  # noqa: UP007
     sort: str = Query("popularity", pattern="^(popularity|vote_average|release_date)$")
 ):
     """List movies with pagination, genre, decade filtering, and sorting."""

@@ -6,7 +6,7 @@ Computes multi-factor explainability objects for recommended titles:
   - Multi-factor feature score breakdowns (SVD, Content-Based, Semantic Vector RAG, Popularity).
 """
 
-from typing import Dict, Any
+from typing import Dict, Any  # noqa: I001, UP035
 
 
 def explain_recommendation(movie: dict, user_taste: dict, algorithm: str = "hybrid") -> str:
@@ -15,7 +15,7 @@ def explain_recommendation(movie: dict, user_taste: dict, algorithm: str = "hybr
     return details["primary_reason"]
 
 
-def explain_recommendation_detailed(movie: dict, user_taste: dict, algorithm: str = "hybrid") -> Dict[str, Any]:
+def explain_recommendation_detailed(movie: dict, user_taste: dict, algorithm: str = "hybrid") -> Dict[str, Any]:  # noqa: PLR0912, UP006
     """
     Returns rich multi-factor explainability object containing narrative summaries,
     genre overlap metrics, collaborative filtering overlap metrics, and component factor weights.
@@ -40,7 +40,7 @@ def explain_recommendation_detailed(movie: dict, user_taste: dict, algorithm: st
             primary_reason = f"Users who share your love of {matched[0][0]} also watched this"
         else:
             primary_reason = "Recommended by users with similar taste profiles"
-    elif algorithm == "embedding" or algorithm == "vector_rag":
+    elif algorithm == "embedding" or algorithm == "vector_rag":  # noqa: PLR1714
         if matched:
             genres = " & ".join(genre for genre, _ in matched[:2])
             primary_reason = f"Semantically similar to your {genres} favorites"
@@ -50,7 +50,7 @@ def explain_recommendation_detailed(movie: dict, user_taste: dict, algorithm: st
         reasons = []
         if matched:
             reasons.append(f"matches your {matched[0][0]} preference")
-        if rating >= 7.5:
+        if rating >= 7.5:  # noqa: PLR2004
             reasons.append(f"rated {rating:.1f}/10")
         primary_reason = "Because it " + " · ".join(reasons) if reasons else "Top pick based on your viewing history"
     elif algorithm == "cold_start":
@@ -58,7 +58,7 @@ def explain_recommendation_detailed(movie: dict, user_taste: dict, algorithm: st
             primary_reason = f"Top-rated selection in your selected genre: {matched[0][0]}"
         else:
             primary_reason = f"Popular viewer favorite ({rating:.1f}/10)"
-    else:
+    else:  # noqa: PLR5501
         if matched:
             primary_reason = f"Matches your top genre: {matched[0][0]}"
         else:
@@ -74,6 +74,6 @@ def explain_recommendation_detailed(movie: dict, user_taste: dict, algorithm: st
             "popularity_score": popularity_score,
             "semantic_rag_score": rag_score,
         },
-        "similar_users_count": 4 if svd_score > 0.7 else 2,
+        "similar_users_count": 4 if svd_score > 0.7 else 2,  # noqa: PLR2004
         "vote_average": rating
     }

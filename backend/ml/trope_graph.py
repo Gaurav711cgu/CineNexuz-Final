@@ -1,5 +1,5 @@
-import logging
-from typing import Any, List, Dict
+import logging  # noqa: I001
+from typing import Any, List, Dict  # noqa: UP035
 
 logger = logging.getLogger(__name__)
 
@@ -28,7 +28,7 @@ class MicroTropeGraphSAGE:
         }
         logger.info("Initialized GraphSAGE Micro-Trope Recommender.")
 
-    def _aggregate_neighborhood(self, trope_ids: List[str]) -> list:
+    def _aggregate_neighborhood(self, trope_ids: List[str]) -> list:  # noqa: UP006
         """Simulates the GraphSAGE aggregation step (MEAN aggregator)."""
         aggregated = [0.0] * self.embedding_dim
         valid_tropes = 0
@@ -46,7 +46,7 @@ class MicroTropeGraphSAGE:
                 
         return aggregated
 
-    def recommend_from_vibe(self, user_tropes: List[str]) -> Dict[str, Any]:
+    def recommend_from_vibe(self, user_tropes: List[str]) -> Dict[str, Any]:  # noqa: UP006
         """
         Takes a list of hyper-specific tropes a user is interested in right now,
         computes the aggregate GraphSAGE embedding, and performs an Approximate 

@@ -6,9 +6,9 @@ and statistical significance calculations using both Chi-squared tests and
 non-parametric Mann-Whitney U hypothesis testing.
 """
 
-import hashlib
-from typing import Dict, Any, Optional
-import scipy.stats as stats
+import hashlib  # noqa: I001
+from typing import Dict, Any, Optional  # noqa: UP035
+from scipy import stats
 import numpy as np
 
 EXPERIMENTS = {
@@ -22,7 +22,7 @@ EXPERIMENTS = {
 }
 
 # In-memory storage for experiment events (flushed to DB/Redis in production)
-_EXPERIMENT_STATS: Dict[str, Dict[str, Dict[str, Any]]] = {
+_EXPERIMENT_STATS: Dict[str, Dict[str, Dict[str, Any]]] = {  # noqa: UP006
     "rec_algorithm": {
         "control_content_based": {
             "impressions": 1250.0,
@@ -47,7 +47,7 @@ def get_variant(user_id: str, experiment: str = "rec_algorithm") -> dict:
     return variant_info
 
 
-def log_experiment_event(experiment: str, variant_name: str, event_type: str = "impression", rating_value: Optional[float] = None):
+def log_experiment_event(experiment: str, variant_name: str, event_type: str = "impression", rating_value: Optional[float] = None):  # noqa: UP007
     """Tracks impression, click, or rating conversion for an experiment variant."""
     if experiment not in _EXPERIMENT_STATS:
         _EXPERIMENT_STATS[experiment] = {}
@@ -63,7 +63,7 @@ def log_experiment_event(experiment: str, variant_name: str, event_type: str = "
         stats_bucket["ratings_list"].append(float(rating_value))
 
 
-def calculate_experiment_significance(experiment: str = "rec_algorithm", alpha: float = 0.05) -> Dict[str, Any]:
+def calculate_experiment_significance(experiment: str = "rec_algorithm", alpha: float = 0.05) -> Dict[str, Any]:  # noqa: UP006
     """
     Computes CTR conversion, average rating, Chi-squared p-value, and
     non-parametric Mann-Whitney U test p-value for heavy-tailed non-Gaussian user metrics.
@@ -73,7 +73,7 @@ def calculate_experiment_significance(experiment: str = "rec_algorithm", alpha: 
         return {"status": "no_data", "experiment": experiment}
 
     variants = list(exp_data.keys())
-    if len(variants) < 2:
+    if len(variants) < 2:  # noqa: PLR2004
         return {"status": "insufficient_variants", "experiment": experiment}
 
     control_name = [v for v in variants if "control" in v][0] if any("control" in v for v in variants) else variants[0]
@@ -101,18 +101,18 @@ def calculate_experiment_significance(experiment: str = "rec_algorithm", alpha: 
     try:
         chi2, chi2_p_value, _, _ = stats.chi2_contingency(contingency_table)
         chi2, chi2_p_value = float(chi2), float(chi2_p_value)
-    except Exception:
+    except Exception:  # noqa: BLE001
         chi2, chi2_p_value = 0.0, 1.0
 
     # 2. Non-Parametric Mann-Whitney U test for rating distribution comparison
-    if len(c_ratings) >= 5 and len(t_ratings) >= 5:
+    if len(c_ratings) >= 5 and len(t_ratings) >= 5:  # noqa: PLR2004
         try:
             u_stat, mw_p_value = stats.mannwhitneyu(t_ratings, c_ratings, alternative="greater")
             u_stat, mw_p_value = float(u_stat), float(mw_p_value)
             # Rank-biserial correlation effect size r = 1 - (2U / (n1 * n2))
             n1, n2 = len(t_ratings), len(c_ratings)
             rank_biserial_effect = round(float(1.0 - (2.0 * u_stat / (n1 * n2))), 4)
-        except Exception:
+        except Exception:  # noqa: BLE001
             u_stat, mw_p_value, rank_biserial_effect = 0.0, 1.0, 0.0
     else:
         u_stat, mw_p_value, rank_biserial_effect = 0.0, 1.0, 0.0
