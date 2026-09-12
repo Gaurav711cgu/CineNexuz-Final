@@ -32,7 +32,7 @@ async def get_movies(  # noqa: PLR0913
                 "popularity": 8.5 + (i * 0.1),
                 "release_date": "2024-01-01"
             }
-            for i in range(1, limit + 1)
+            for i in range(1, (limit or 20) + 1)
         ]
     }
 
@@ -43,7 +43,7 @@ async def get_trending_movies(limit: int = Query(10, ge=1, le=50)):
         "status": "success",
         "trending": [
             {"id": f"trend_{i}", "title": f"Trending Blockbuster {i}", "popularity": 9.8 - (i * 0.2)}
-            for i in range(1, limit + 1)
+            for i in range(1, (limit or 20) + 1)
         ]
     }
 
