@@ -367,7 +367,7 @@ export default function TheatrePage() {
                     key={m._id}
                     whileHover={{ y: -4, scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
-                    className="group relative rounded-xl overflow-hidden glass-card cursor-pointer"
+                    className="group relative rounded-none overflow-hidden border-2 border-white/20 bg-black cursor-pointer hover:border-white transition-colors"
                     onClick={() => selectMovie(m)}
                     data-testid={`theatre-movie-${m._id}`}
                   >
@@ -375,21 +375,21 @@ export default function TheatrePage() {
                       <img 
                         src={posterUrl} 
                         alt={m.title} 
-                        className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" 
+                        className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105 filter grayscale hover:grayscale-0" 
                         loading="lazy" 
                         onError={(e) => {
                           e.target.src = 'https://images.unsplash.com/photo-1563089145-599997674d42?w=300&h=450&fit=crop';
                         }}
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-3">
-                        <Badge className="bg-[hsl(var(--primary))] text-white text-xs gap-1"><Ticket size={10} /> Book Tickets</Badge>
+                      <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center p-3 border-[4px] border-transparent group-hover:border-[hsl(var(--primary))]">
+                        <Badge className="bg-[hsl(var(--primary))] text-black font-black uppercase tracking-widest text-[10px] px-6 py-2 rounded-none"><Ticket size={14} className="mr-2" /> Book</Badge>
                       </div>
                     </div>
-                    <div className="p-3">
-                      <h3 className="text-sm font-semibold truncate">{m.title}</h3>
-                      <div className="flex items-center gap-2 mt-1">
+                    <div className="p-3 border-t border-white/10 group-hover:bg-[hsl(var(--primary))] transition-colors">
+                      <h3 className="text-xs font-black uppercase tracking-wide truncate group-hover:text-black">{m.title}</h3>
+                      <div className="flex items-center gap-2 mt-2">
                         {m.genres?.slice(0, 2).map(g => (
-                          <Badge key={g} variant="secondary" className="text-[10px] px-1.5 py-0">{g}</Badge>
+                          <Badge key={g} variant="secondary" className="text-[9px] px-2 py-0 rounded-none bg-transparent border-white/20 text-white/70 group-hover:border-black/20 group-hover:text-black font-mono tracking-widest uppercase">{g}</Badge>
                         ))}
                       </div>
                     </div>
@@ -398,10 +398,11 @@ export default function TheatrePage() {
               })}
             </div>
           ) : (
-            <Card className="glass-card border-white/10">
-              <CardContent className="p-12 text-center">
-                <Ticket size={48} className="mx-auto mb-4 text-[hsl(var(--muted-foreground))]" />
-                <p className="text-lg font-medium mb-2">No movies currently available</p>
+            <Card className="rounded-none border-2 border-[hsl(var(--primary))] bg-black shadow-[8px_8px_0px_0px_hsl(var(--primary))]">
+              <CardContent className="p-16 text-center">
+                <Ticket size={64} className="mx-auto mb-6 text-white/20" />
+                <p className="text-3xl font-black uppercase tracking-tight mb-2">No Movies</p>
+                <p className="text-sm font-mono uppercase tracking-widest text-white/50">Try again later</p>
               </CardContent>
             </Card>
           )}

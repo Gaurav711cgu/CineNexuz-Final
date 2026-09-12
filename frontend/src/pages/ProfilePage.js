@@ -70,7 +70,7 @@ export default function ProfilePage() {
         <h1 className="text-3xl font-semibold tracking-tight mb-6" style={{ fontFamily: 'Space Grotesk' }}>Profile</h1>
 
         {/* User Info */}
-        <Card className="glass-card border-white/10 mb-6">
+        <Card className="rounded-none border-2 border-white/20 bg-black mb-6">
           <CardContent className="p-6">
             <div className="flex items-center gap-4">
               <div className="w-16 h-16 rounded-full bg-[#00E4FF] flex items-center justify-center text-2xl font-bold text-white shadow-[0_0_25px_rgba(0,228,255,0.5)]">
@@ -94,7 +94,7 @@ export default function ProfilePage() {
 
         {/* Taste DNA Section */}
         {onboardingStatus && !onboardingStatus.completed ? (
-          <Card className="glass-card border-white/10 mb-6">
+          <Card className="rounded-none border-2 border-white/20 bg-black mb-6">
             <CardContent className="p-6 text-center">
               <div className="w-16 h-16 rounded-full bg-[hsl(var(--primary))]/15 flex items-center justify-center mx-auto mb-4">
                 <Sparkles size={32} className="text-[hsl(var(--primary))]" />
@@ -111,7 +111,7 @@ export default function ProfilePage() {
             </CardContent>
           </Card>
         ) : tasteDNA?.initialized ? (
-          <Card className="glass-card border-white/10 mb-6">
+          <Card className="rounded-none border-2 border-white/20 bg-black mb-6">
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-lg">
                 <Dna size={18} /> Your Taste DNA
@@ -220,7 +220,7 @@ export default function ProfilePage() {
         ) : null}
 
         {/* Subscription */}
-        <Card className="glass-card border-white/10 mb-6">
+        <Card className="rounded-none border-2 border-white/20 bg-black mb-6">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-lg">
               <CreditCard size={18} /> Subscription
@@ -252,7 +252,7 @@ export default function ProfilePage() {
         </Card>
 
         {/* Purchases */}
-        <Card className="glass-card border-white/10">
+        <Card className="rounded-none border-2 border-white/20 bg-black">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-lg">
               <ShoppingBag size={18} /> Purchases

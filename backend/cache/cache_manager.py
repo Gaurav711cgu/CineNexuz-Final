@@ -63,8 +63,9 @@ async def get_cached_or_fetch(
                 try:
                     from metrics.prometheus import CACHE_HIT_COUNTER
                     CACHE_HIT_COUNTER.labels(key_prefix=key.split(":")[0]).inc()
-                except Exception:
-                    pass
+                except Exception as e:
+                    import logging
+                    logging.getLogger("cinenexus").warning("Swallowed exception", exc_info=True)
                 return json.loads(cached_data)
         except Exception as e:
             logger.warning(f"Redis cache-aside read failed for key '{key}': {e}. Failing open to DB.")
@@ -73,8 +74,9 @@ async def get_cached_or_fetch(
     try:
         from metrics.prometheus import CACHE_MISS_COUNTER
         CACHE_MISS_COUNTER.labels(key_prefix=key.split(":")[0]).inc()
-    except Exception:
-        pass
+    except Exception as e:
+        import logging
+        logging.getLogger("cinenexus").warning("Swallowed exception", exc_info=True)
 
     result = await fetch_fn()
 

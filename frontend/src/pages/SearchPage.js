@@ -71,7 +71,7 @@ export default function SearchPage() {
                   <X size={16} />
                 </Button>
               )}
-              <Button type="submit" size="sm" className="bg-[hsl(var(--primary))] hover:brightness-110" data-testid="search-submit-button">
+              <Button aria-label="search submit button" type="submit" size="sm" className="bg-[hsl(var(--primary))] hover:brightness-110" data-testid="search-submit-button">
                 Search
               </Button>
             </div>

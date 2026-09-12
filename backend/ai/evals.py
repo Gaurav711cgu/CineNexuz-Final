@@ -241,8 +241,9 @@ class EvalRunner:
                             movie = await self.db.movies.find_one({"_id": ObjectId(movie_id)})
                             if movie:
                                 r["genres"] = movie.get("genres", [])
-                        except:
-                            pass
+                        except Exception as e:
+                            import logging
+                            logging.getLogger("cinenexus").warning("Swallowed bare exception", exc_info=True)
             
             # 2. Check retrieval precision against expected_genres
             if retrieved_movies and expected_genres:

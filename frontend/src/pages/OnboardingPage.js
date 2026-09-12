@@ -141,14 +141,14 @@ export default function OnboardingPage() {
         className="relative z-10 w-full max-w-3xl"
       >
         {/* Header */}
-        <div className="text-center mb-8">
-          <div className="w-16 h-16 rounded-2xl bg-[#00E4FF] flex items-center justify-center mx-auto mb-4 shadow-[0_0_30px_rgba(0,228,255,0.6)]">
-            <Sparkles size={32} className="text-white" />
+        <div className="text-center mb-10 border-b-4 border-[hsl(var(--primary))] pb-8">
+          <div className="w-20 h-20 bg-[hsl(var(--primary))] flex items-center justify-center mx-auto mb-6 shadow-[8px_8px_0px_0px_white] border-4 border-white">
+            <Sparkles size={40} className="text-black" />
           </div>
-          <h1 className="text-3xl sm:text-4xl font-semibold tracking-tight mb-2" style={{ fontFamily: 'Space Grotesk' }}>
+          <h1 className="text-5xl md:text-6xl font-black tracking-widest uppercase mb-4 text-white" style={{ fontFamily: 'Space Grotesk' }}>
             Build Your Taste DNA
           </h1>
-          <p className="text-[hsl(var(--muted-foreground))] max-w-md mx-auto">
+          <p className="font-mono uppercase tracking-widest text-xs text-white/50 max-w-md mx-auto">
             Help us understand your preferences to create personalized recommendations
           </p>
         </div>
@@ -163,8 +163,8 @@ export default function OnboardingPage() {
         </div>
 
         {/* Steps */}
-        <Card className="glass-card border-white/10">
-          <CardHeader>
+        <Card className="rounded-none border-4 border-white bg-black shadow-[12px_12px_0px_0px_rgba(255,255,255,1)] mb-8">
+          <CardHeader className="border-b-4 border-white bg-[hsl(var(--primary))] text-black">
             <CardTitle className="flex items-center gap-2">
               {step === 1 && <><Film size={20} /> Favorite Genres</>}
               {step === 2 && <><Heart size={20} /> Preferred Moods</>}

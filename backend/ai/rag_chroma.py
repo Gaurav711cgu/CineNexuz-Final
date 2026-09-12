@@ -238,8 +238,9 @@ class MovieVectorStore:
         if self.collection is not None:
             try:
                 count = self.collection.count()
-            except:
-                pass
+            except Exception as e:
+                import logging
+                logging.getLogger("cinenexus").warning("Swallowed bare exception", exc_info=True)
         
         return {
             "total_indexed": count,

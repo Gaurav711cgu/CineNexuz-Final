@@ -262,7 +262,7 @@ async def migrate_data():
         logger.info("="*50)
 
     except Exception as e:
-        logger.error(f"Error executing migration pipeline: {e}")
+        logger.exception(f"Error executing migration pipeline: {e}")
     finally:
         mongo_client.close()
         await pg_conn.close()

@@ -84,55 +84,55 @@ export function Top10Card({ movie, rank, onHover }) {
 
           {/* Movie Card */}
           <div className="flex-1 min-w-0">
-            <div className="relative aspect-[16/9] rounded-lg overflow-hidden bg-white/5">
+            <div className="relative aspect-[16/9] rounded-none overflow-hidden bg-black border border-white/20 group-hover:border-[hsl(var(--primary))] transition-colors">
               {movie.backdrop_path ? (
                 <img
                   src={`${TMDB_IMG}${movie.backdrop_path}`}
                   alt={movie.title}
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                  className="w-full h-full object-cover filter grayscale group-hover:grayscale-0 transition-transform duration-500 group-hover:scale-105"
                   onError={(e) => {
                     e.target.src = 'https://images.unsplash.com/photo-1563089145-599997674d42?w=500&h=281&fit=crop';
                   }}
                 />
               ) : (
-                <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-white/10 to-white/5">
-                  <Play size={40} className="text-[hsl(var(--muted-foreground))]" />
+                <div className="w-full h-full flex items-center justify-center bg-black">
+                  <Play size={40} className="text-white/20" />
                 </div>
               )}
               
-              {/* Gradient Overlay */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              {/* Hard Overlay */}
+              <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-200 border-[4px] border-transparent group-hover:border-[hsl(var(--primary))]" />
               
               {/* Rank Badge */}
-              <div className="absolute top-2 right-2">
+              <div className="absolute top-0 right-0">
                 <div
-                  className="px-3 py-1 rounded-full text-xs font-bold text-white shadow-lg"
-                  style={{ background: gradient }}
+                  className="px-4 py-2 text-black text-xs font-bold font-mono tracking-widest uppercase"
+                  style={{ background: fillColor }}
                 >
-                  #{rank}
+                  [{rank}]
                 </div>
               </div>
 
               {/* Hover Info */}
               <motion.div
-                className="absolute bottom-0 left-0 right-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300"
+                className="absolute bottom-0 left-0 right-0 p-6 translate-y-full group-hover:translate-y-0 transition-transform duration-300"
                 initial={false}
               >
-                <h3 className="text-lg font-semibold mb-2 line-clamp-1">{movie.title}</h3>
-                <div className="flex items-center gap-2">
+                <h3 className="text-xl font-black uppercase tracking-tight mb-4 text-white line-clamp-1">{movie.title}</h3>
+                <div className="flex items-center gap-3">
                   <Button 
                     size="sm" 
-                    className="bg-white hover:bg-white/90 text-black gap-2"
+                    className="rounded-none border border-[hsl(var(--primary))] bg-[hsl(var(--primary))] hover:bg-transparent text-black hover:text-[hsl(var(--primary))] uppercase font-bold tracking-widest text-[10px] px-6"
                     data-testid={`top10-play-${rank}`}
                   >
-                    <Play size={14} fill="currentColor" /> Play
+                    [ Play ]
                   </Button>
                   <Button
                     size="sm"
                     variant="outline"
-                    className="bg-white/10 border-white/20 hover:bg-white/20 gap-2"
+                    className="rounded-none bg-transparent border-white hover:bg-white text-white hover:text-black uppercase font-bold tracking-widest text-[10px] px-6"
                   >
-                    <Info size={14} /> Info
+                    Info
                   </Button>
                 </div>
               </motion.div>

@@ -101,5 +101,5 @@ async def generate_film_concept(req: FilmStudioRequest):
             "studio_telemetry": studio_output
         }
     except Exception as exc:
-        logger.error(f"Film Studio agent error: {exc}")
+        logger.exception(f"Film Studio agent error: {exc}")
         raise HTTPException(status_code=500, detail="Film Studio agent execution failed") from exc

@@ -55,6 +55,21 @@ let webpackConfig = {
       if (config.enableHealthCheck && healthPluginInstance) {
         webpackConfig.plugins.push(healthPluginInstance);
       }
+      
+      // Enterprise: Strip console.logs in production
+      if (process.env.NODE_ENV === "production" && webpackConfig.optimization && webpackConfig.optimization.minimizer) {
+        webpackConfig.optimization.minimizer.forEach((minimizer) => {
+          if (minimizer.constructor.name === 'TerserPlugin') {
+            if (!minimizer.options.terserOptions) {
+               minimizer.options.terserOptions = {};
+            }
+            if (!minimizer.options.terserOptions.compress) {
+               minimizer.options.terserOptions.compress = {};
+            }
+            minimizer.options.terserOptions.compress.drop_console = true;
+          }
+        });
+      }
       return webpackConfig;
     },
   },

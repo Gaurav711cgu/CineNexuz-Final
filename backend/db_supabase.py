@@ -30,7 +30,7 @@ class SupabaseDBManager:
             )
             logger.info("Successfully established connection pool to Supabase cluster.")
         except Exception as e:
-            logger.error(f"Failed to connect to Supabase PostgreSQL: {e}")
+            logger.exception(f"Failed to connect to Supabase PostgreSQL: {e}")
             raise e
 
     async def disconnect(self):
@@ -84,7 +84,7 @@ class SupabaseDBManager:
             records = await self.fetch(sql_query, query_vector, min_similarity, limit)
             return [dict(r) for r in records]
         except Exception as e:
-            logger.error(f"Failed executing semantic vector search: {e}")
+            logger.exception(f"Failed executing semantic vector search: {e}")
             return []
 
     # ── ratings Matrix pull for collaborative SVD worker retraining ──
@@ -98,7 +98,7 @@ class SupabaseDBManager:
             records = await self.fetch(sql_query)
             return [dict(r) for r in records]
         except Exception as e:
-            logger.error(f"Failed fetching SVD ML rating records: {e}")
+            logger.exception(f"Failed fetching SVD ML rating records: {e}")
             return []
 
 # Singleton instance of the Supabase Database manager

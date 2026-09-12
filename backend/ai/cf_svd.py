@@ -95,8 +95,9 @@ class CollaborativeFilteringEngine:
                                 dt = watched_at
                             else:
                                 dt = datetime.fromisoformat(str(watched_at).replace('Z', '+00:00'))
-                        except Exception:
-                            pass
+                        except Exception as e:
+                            import logging
+                            logging.getLogger("cinenexus").warning("Swallowed exception", exc_info=True)
                     if not dt:
                         dt = datetime.now(timezone.utc)
                     
@@ -120,8 +121,9 @@ class CollaborativeFilteringEngine:
                             dt = created_at
                         else:
                             dt = datetime.fromisoformat(str(created_at).replace('Z', '+00:00'))
-                    except Exception:
-                        pass
+                    except Exception as e:
+                        import logging
+                        logging.getLogger("cinenexus").warning("Swallowed exception", exc_info=True)
                 if not dt:
                     dt = datetime.now(timezone.utc)
                 

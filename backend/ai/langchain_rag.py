@@ -186,8 +186,9 @@ Answer:"""
         if self.vectorstore:
             try:
                 count = self.vectorstore._collection.count()
-            except:
-                pass
+            except Exception as e:
+                import logging
+                logging.getLogger("cinenexus").warning("Swallowed bare exception", exc_info=True)
         
         return {
             "is_ready": self.is_ready,

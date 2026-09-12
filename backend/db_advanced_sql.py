@@ -32,7 +32,7 @@ class AdvancedSQLEngine:
             logger.info("Successfully refreshed Materialized View 'mv_genre_popularity_stats' concurrently.")
             return True
         except Exception as e:
-            logger.error(f"Failed to refresh Materialized View: {e}")
+            logger.exception(f"Failed to refresh Materialized View: {e}")
             return False
 
     async def get_top_movies_per_genre_window(self, genre: str, limit: int = 5) -> List[Dict[str, Any]]:
@@ -52,7 +52,7 @@ class AdvancedSQLEngine:
             records = await self.db_manager.fetch(sql, genre, limit)
             return [dict(r) for r in records]
         except Exception as e:
-            logger.error(f"Error fetching top movies via Window Function view: {e}")
+            logger.exception(f"Error fetching top movies via Window Function view: {e}")
             return []
 
     async def get_franchise_recursive_cte(self, root_movie_id: int) -> List[Dict[str, Any]]:
@@ -79,7 +79,7 @@ class AdvancedSQLEngine:
             records = await self.db_manager.fetch(sql, root_movie_id)
             return [dict(r) for r in records]
         except Exception as e:
-            logger.error(f"Error executing Recursive CTE: {e}")
+            logger.exception(f"Error executing Recursive CTE: {e}")
             return []
 
 

@@ -108,31 +108,32 @@ export default function DiscoverPage() {
   return (
     <div className="px-4 sm:px-6 lg:px-8 py-6 max-w-[1400px] mx-auto">
       <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
-        <div className="flex items-center gap-3 mb-6">
-          <Compass size={28} className="text-[hsl(var(--primary))]" />
-          <h1 className="text-3xl font-semibold tracking-tight" style={{ fontFamily: 'Space Grotesk' }}>Discover</h1>
+        <div className="flex items-center gap-4 mb-8 border-b-4 border-[hsl(var(--primary))] pb-4">
+          <Compass size={40} className="text-[hsl(var(--primary))]" />
+          <h1 className="text-4xl font-black uppercase tracking-widest text-white" style={{ fontFamily: 'Space Grotesk' }}>Discover</h1>
         </div>
 
         {/* Mood Selector */}
-        <div className="glass-card rounded-xl p-4 mb-6">
-          <div className="flex items-center gap-2 mb-3">
-            <Sparkles size={16} className="text-[hsl(var(--primary))]" />
-            <span className="text-sm font-medium">What's your mood?</span>
+        <div className="border-2 border-white/20 bg-black p-6 mb-8 shadow-[8px_8px_0px_0px_rgba(255,255,255,0.1)]">
+          <div className="flex items-center gap-3 mb-6 border-b-2 border-white/10 pb-4">
+            <Sparkles size={24} className="text-[hsl(var(--primary))]" />
+            <span className="text-lg font-black uppercase tracking-widest text-white">What's your mood?</span>
           </div>
           <ToggleGroup
             type="single"
             value={selectedMood}
             onValueChange={handleMood}
-            className="flex flex-wrap gap-2"
+            className="flex flex-wrap gap-3"
           >
             {MOODS.map(mood => (
               <ToggleGroupItem
                 key={mood.value}
                 value={mood.value}
-                className="glass-card text-xs px-3 py-1.5 data-[state=on]:bg-[hsl(var(--primary))]/15 data-[state=on]:text-[hsl(var(--primary))] data-[state=on]:border-[hsl(var(--primary))]/30"
+                className="rounded-none border-2 border-white/20 bg-black text-white hover:bg-white/10 hover:border-white px-6 py-4 data-[state=on]:bg-[hsl(var(--primary))] data-[state=on]:text-black data-[state=on]:border-[hsl(var(--primary))] data-[state=on]:shadow-[4px_4px_0px_0px_hsl(var(--primary))]"
                 data-testid={`mood-${mood.value}`}
               >
-                {mood.emoji}
+                <span className="text-2xl mr-2">{mood.emoji}</span>
+                <span className="font-mono uppercase tracking-widest text-xs font-bold">{mood.value}</span>
               </ToggleGroupItem>
             ))}
           </ToggleGroup>
@@ -140,8 +141,8 @@ export default function DiscoverPage() {
 
         {/* Mood Results */}
         {selectedMood && (
-          <div className="mb-8">
-            <h2 className="text-xl font-semibold tracking-tight mb-4" style={{ fontFamily: 'Space Grotesk' }}>
+          <div className="mb-10">
+            <h2 className="text-2xl font-black uppercase tracking-widest text-white mb-6 border-l-4 border-[hsl(var(--primary))] pl-4">
               For your "{selectedMood}" mood
             </h2>
             {moodLoading ? (
@@ -157,25 +158,25 @@ export default function DiscoverPage() {
         )}
 
         {/* Filters */}
-        <div className="flex flex-wrap items-center gap-3 mb-6">
-          <Filter size={16} className="text-[hsl(var(--muted-foreground))]" />
+        <div className="flex flex-wrap items-center gap-4 mb-8 bg-black border-2 border-white/20 p-4 shadow-[4px_4px_0px_0px_rgba(255,255,255,0.1)]">
+          <Filter size={24} className="text-white" />
           <Select value={selectedGenre} onValueChange={(v) => { setSelectedGenre(v === 'all' ? '' : v); }}>
-            <SelectTrigger className="w-[160px] glass-card" data-testid="genre-filter">
+            <SelectTrigger className="w-[180px] rounded-none border-2 border-white/20 bg-black text-white font-mono uppercase tracking-widest text-xs h-12 hover:border-white focus:ring-0 focus:ring-offset-0" data-testid="genre-filter">
               <SelectValue placeholder="All Genres" />
             </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Genres</SelectItem>
-              {genres.map(g => <SelectItem key={g} value={g}>{g}</SelectItem>)}
+            <SelectContent className="rounded-none border-2 border-[hsl(var(--primary))] bg-black text-white font-mono uppercase tracking-widest text-xs">
+              <SelectItem value="all" className="focus:bg-[hsl(var(--primary))] focus:text-black rounded-none">All Genres</SelectItem>
+              {genres.map(g => <SelectItem key={g} value={g} className="focus:bg-[hsl(var(--primary))] focus:text-black rounded-none">{g}</SelectItem>)}
             </SelectContent>
           </Select>
           <Select value={sort} onValueChange={(v) => { setSort(v); }}>
-            <SelectTrigger className="w-[160px] glass-card" data-testid="sort-filter">
+            <SelectTrigger className="w-[180px] rounded-none border-2 border-white/20 bg-black text-white font-mono uppercase tracking-widest text-xs h-12 hover:border-white focus:ring-0 focus:ring-offset-0" data-testid="sort-filter">
               <SelectValue />
             </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="popularity">Most Popular</SelectItem>
-              <SelectItem value="vote_average">Highest Rated</SelectItem>
-              <SelectItem value="release_date">Newest</SelectItem>
+            <SelectContent className="rounded-none border-2 border-[hsl(var(--primary))] bg-black text-white font-mono uppercase tracking-widest text-xs">
+              <SelectItem value="popularity" className="focus:bg-[hsl(var(--primary))] focus:text-black rounded-none">Most Popular</SelectItem>
+              <SelectItem value="vote_average" className="focus:bg-[hsl(var(--primary))] focus:text-black rounded-none">Highest Rated</SelectItem>
+              <SelectItem value="release_date" className="focus:bg-[hsl(var(--primary))] focus:text-black rounded-none">Newest</SelectItem>
             </SelectContent>
           </Select>
         </div>

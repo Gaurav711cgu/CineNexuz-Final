@@ -40,7 +40,7 @@ class TransactionalContextManager:
                     yield conn
                     logger.debug("Successfully committed PostgreSQL transaction.")
             except Exception as e:
-                logger.error(f"Transaction failed and rolled back cleanly: {e}")
+                logger.exception(f"Transaction failed and rolled back cleanly: {e}")
                 raise e
 
     async def get_with_row_lock(self, conn, table: str, primary_key_col: str, primary_key_val: Any) -> Optional[dict]:

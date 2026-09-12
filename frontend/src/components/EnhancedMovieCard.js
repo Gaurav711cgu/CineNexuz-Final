@@ -59,7 +59,7 @@ export function EnhancedMovieCard({ movie, onHover, onHoverEnd, showTrailer = tr
       data-testid={`movie-card-${movie._id}`}
     >
       <Link to={`/movie/${movie._id}`}>
-        <div className="relative aspect-[2/3] rounded-lg overflow-hidden bg-white/5">
+        <div className="relative aspect-[2/3] rounded-none overflow-hidden border border-white/20 bg-black group-hover:border-white transition-colors">
           {/* Poster Image */}
           {(movie.poster_url || movie.poster_path) ? (
             <img
@@ -68,78 +68,65 @@ export function EnhancedMovieCard({ movie, onHover, onHoverEnd, showTrailer = tr
                 : `${TMDB_IMG}${movie.poster_path}`
               }
               alt={movie.title}
-              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+              className="w-full h-full object-cover filter grayscale group-hover:grayscale-0 transition-all duration-500"
               onError={(e) => {
                 e.target.src = 'https://images.unsplash.com/photo-1563089145-599997674d42?w=300&h=450&fit=crop';
               }}
             />
           ) : (
-            <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-white/10 to-white/5">
-              <Play size={32} className="text-[hsl(var(--muted-foreground))]" />
+            <div className="w-full h-full flex items-center justify-center bg-black border border-white/10">
+              <Play size={32} className="text-white/20" />
             </div>
           )}
 
-          {/* Gradient Overlay */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+          {/* Brutalist Hard Shadow Overlay */}
+          <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-200 border-[4px] border-transparent group-hover:border-[hsl(var(--primary))]" />
 
           {/* Preview State (after 5s hover) */}
           {showPreview && (
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className="absolute inset-0 bg-black/80 flex items-center justify-center"
+              className="absolute inset-0 bg-[hsl(var(--primary))] flex items-center justify-center border-4 border-black"
             >
-              <div className="text-center">
-                <motion.div
-                  initial={{ scale: 0.5 }}
-                  animate={{ scale: 1 }}
-                  transition={{ duration: 0.3 }}
-                  className="w-16 h-16 rounded-full bg-[hsl(var(--primary))] flex items-center justify-center mx-auto mb-3 shadow-[0_0_30px_rgba(0,228,255,0.6)]"
-                >
-                  <Play size={28} className="text-white ml-1" fill="white" />
-                </motion.div>
-                <p className="text-sm text-white font-medium">Watch Trailer</p>
+              <div className="text-center mix-blend-difference text-white">
+                <Play size={40} className="mx-auto mb-2" fill="currentColor" />
+                <p className="text-xs font-bold uppercase tracking-widest font-mono">[ Preview ]</p>
               </div>
             </motion.div>
           )}
 
           {/* Info Overlay on Hover */}
           <motion.div
-            className="absolute bottom-0 left-0 right-0 p-3 translate-y-full group-hover:translate-y-0 transition-transform duration-300"
+            className="absolute bottom-0 left-0 right-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300 bg-black/90 border-t border-[hsl(var(--primary))]"
             initial={false}
           >
-            <div className="flex items-center gap-2 mb-2">
+            <div className="flex items-center justify-between mb-3 font-mono text-[10px] tracking-widest text-[hsl(var(--primary))]">
               {movie.vote_average > 0 && (
-                <div className="flex items-center gap-1 text-xs text-yellow-400">
-                  <Star size={12} fill="currentColor" />
-                  <span className="font-semibold">{movie.vote_average.toFixed(1)}</span>
-                </div>
+                <span>{movie.vote_average.toFixed(1)} RTG</span>
               )}
               {movie.release_date && (
-                <span className="text-xs text-white/70">
+                <span>
                   {new Date(movie.release_date).getFullYear()}
                 </span>
               )}
             </div>
             
             {movie.genres && movie.genres.length > 0 && (
-              <div className="flex flex-wrap gap-1">
+              <div className="flex flex-wrap gap-1 font-mono text-[9px] uppercase">
                 {movie.genres.slice(0, 2).map((genre) => (
-                  <Badge
-                    key={genre}
-                    className="text-[10px] px-1.5 py-0.5 bg-white/10 text-white border-white/20"
-                  >
+                  <span key={genre} className="border border-white/30 px-1 py-0.5 text-white">
                     {genre}
-                  </Badge>
+                  </span>
                 ))}
               </div>
             )}
           </motion.div>
 
-          {/* Hover Progress Bar (shows trailer countdown) */}
+          {/* Hover Progress Bar */}
           {isHovered && showTrailer && !showPreview && (
             <motion.div
-              className="absolute bottom-0 left-0 right-0 h-1 bg-white/20"
+              className="absolute top-0 left-0 right-0 h-1 bg-white/20"
               initial={{ scaleX: 0 }}
               animate={{ scaleX: 1 }}
               transition={{ duration: 5, ease: "linear" }}
@@ -151,7 +138,7 @@ export function EnhancedMovieCard({ movie, onHover, onHoverEnd, showTrailer = tr
         </div>
 
         {/* Title */}
-        <h3 className="mt-2 text-sm font-medium line-clamp-2 group-hover:text-[hsl(var(--primary))] transition-colors">
+        <h3 className="mt-3 text-[11px] font-bold uppercase tracking-wider line-clamp-2 group-hover:text-[hsl(var(--primary))] transition-colors">
           {movie.title}
         </h3>
       </Link>

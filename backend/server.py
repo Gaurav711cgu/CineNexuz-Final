@@ -112,7 +112,7 @@ async def deep_health_check():
         for k in health["checks"]:
             health["checks"][k] = "healthy"
     except Exception as e:
-        logger.error(f"Deep health check failed: {e}")
+        logger.exception(f"Deep health check failed: {e}")
         health["status"] = "degraded"
     
     return health

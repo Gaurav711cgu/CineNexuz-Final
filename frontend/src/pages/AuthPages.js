@@ -176,13 +176,13 @@ export function LoginPage() {
                   <form onSubmit={handleSubmit} className="space-y-4">
                     <div className="relative">
                       <Mail size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-[hsl(var(--muted-foreground))]" />
-                      <Input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} className="pl-10 bg-white/5 border-white/10" required data-testid="login-email-input" />
+                      <Input aria-label="Email" type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} className="pl-10 bg-white/5 border-white/10" required data-testid="login-email-input" />
                     </div>
                     <div className="relative">
                       <Lock size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-[hsl(var(--muted-foreground))]" />
-                      <Input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} className="pl-10 bg-white/5 border-white/10" required data-testid="login-password-input" />
+                      <Input aria-label="Password" type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} className="pl-10 bg-white/5 border-white/10" required data-testid="login-password-input" />
                     </div>
-                    <Button type="submit" className="w-full bg-[hsl(var(--primary))] hover:brightness-110 gap-2" disabled={loading} data-testid="login-submit-button">
+                    <Button aria-label="login submit button" type="submit" className="w-full bg-[hsl(var(--primary))] hover:brightness-110 gap-2" disabled={loading} data-testid="login-submit-button">
                       {loading ? 'Signing in...' : 'Sign In'} <ArrowRight size={16} />
                     </Button>
                   </form>
@@ -256,17 +256,17 @@ export function SignupPage() {
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="relative">
                   <User size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-[hsl(var(--muted-foreground))]" />
-                  <Input placeholder="Full Name" value={name} onChange={(e) => setName(e.target.value)} className="pl-10 bg-white/5 border-white/10" required data-testid="signup-name-input" />
+                  <Input aria-label="Full Name" placeholder="Full Name" value={name} onChange={(e) => setName(e.target.value)} className="pl-10 bg-white/5 border-white/10" required data-testid="signup-name-input" />
                 </div>
                 <div className="relative">
                   <Mail size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-[hsl(var(--muted-foreground))]" />
-                  <Input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} className="pl-10 bg-white/5 border-white/10" required data-testid="signup-email-input" />
+                  <Input aria-label="Email" type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} className="pl-10 bg-white/5 border-white/10" required data-testid="signup-email-input" />
                 </div>
                 <div className="relative">
                   <Lock size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-[hsl(var(--muted-foreground))]" />
-                  <Input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} className="pl-10 bg-white/5 border-white/10" required minLength={6} data-testid="signup-password-input" />
+                  <Input aria-label="Password" type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} className="pl-10 bg-white/5 border-white/10" required minLength={6} data-testid="signup-password-input" />
                 </div>
-                <Button type="submit" className="w-full bg-[hsl(var(--primary))] hover:brightness-110 gap-2" disabled={loading} data-testid="signup-submit-button">
+                <Button aria-label="signup submit button" type="submit" className="w-full bg-[hsl(var(--primary))] hover:brightness-110 gap-2" disabled={loading} data-testid="signup-submit-button">
                   {loading ? 'Creating...' : 'Create Account'}
                   <ArrowRight size={16} />
                 </Button>
@@ -329,9 +329,9 @@ function OTPLoginForm() {
         <p className="text-sm text-[hsl(var(--muted-foreground))]">Enter the 6-digit code sent to <strong>{email}</strong></p>
         <div className="relative">
           <KeyRound size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-[hsl(var(--muted-foreground))]" />
-          <Input placeholder="000000" value={code} onChange={(e) => setCode(e.target.value)} className="pl-10 bg-white/5 border-white/10 text-center text-lg tracking-[0.5em]" maxLength={6} required data-testid="otp-code-input" />
+          <Input aria-label="000000" placeholder="000000" value={code} onChange={(e) => setCode(e.target.value)} className="pl-10 bg-white/5 border-white/10 text-center text-lg tracking-[0.5em]" maxLength={6} required data-testid="otp-code-input" />
         </div>
-        <Button type="submit" className="w-full bg-[hsl(var(--primary))] hover:brightness-110 gap-2" disabled={loading} data-testid="otp-verify-button">
+        <Button aria-label="otp verify button" type="submit" className="w-full bg-[hsl(var(--primary))] hover:brightness-110 gap-2" disabled={loading} data-testid="otp-verify-button">
           {loading ? 'Verifying...' : 'Verify & Sign In'}
         </Button>
         <button type="button" className="text-xs text-[hsl(var(--muted-foreground))] hover:text-[hsl(var(--primary))]" onClick={() => setStep('email')}>
@@ -345,9 +345,9 @@ function OTPLoginForm() {
     <form onSubmit={requestOTP} className="space-y-4">
       <div className="relative">
         <Mail size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-[hsl(var(--muted-foreground))]" />
-        <Input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} className="pl-10 bg-white/5 border-white/10" required data-testid="otp-email-input" />
+        <Input aria-label="Email" type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} className="pl-10 bg-white/5 border-white/10" required data-testid="otp-email-input" />
       </div>
-      <Button type="submit" className="w-full bg-[hsl(var(--primary))] hover:brightness-110 gap-2" disabled={loading} data-testid="otp-request-button">
+      <Button aria-label="otp request button" type="submit" className="w-full bg-[hsl(var(--primary))] hover:brightness-110 gap-2" disabled={loading} data-testid="otp-request-button">
         {loading ? 'Sending...' : 'Send OTP'} <Mail size={16} />
       </Button>
     </form>
@@ -405,9 +405,9 @@ export function PasswordResetPage() {
               <form onSubmit={requestReset} className="space-y-4">
                 <div className="relative">
                   <Mail size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-[hsl(var(--muted-foreground))]" />
-                  <Input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} className="pl-10 bg-white/5 border-white/10" required data-testid="reset-email-input" />
+                  <Input aria-label="Email" type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} className="pl-10 bg-white/5 border-white/10" required data-testid="reset-email-input" />
                 </div>
-                <Button type="submit" className="w-full bg-[hsl(var(--primary))] hover:brightness-110" disabled={loading} data-testid="reset-request-button">
+                <Button aria-label="reset request button" type="submit" className="w-full bg-[hsl(var(--primary))] hover:brightness-110" disabled={loading} data-testid="reset-request-button">
                   {loading ? 'Sending...' : 'Send Reset Code'}
                 </Button>
               </form>
@@ -415,13 +415,13 @@ export function PasswordResetPage() {
               <form onSubmit={confirmReset} className="space-y-4">
                 <div className="relative">
                   <KeyRound size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-[hsl(var(--muted-foreground))]" />
-                  <Input placeholder="000000" value={code} onChange={(e) => setCode(e.target.value)} className="pl-10 bg-white/5 border-white/10 text-center text-lg tracking-[0.5em]" maxLength={6} required data-testid="reset-code-input" />
+                  <Input aria-label="000000" placeholder="000000" value={code} onChange={(e) => setCode(e.target.value)} className="pl-10 bg-white/5 border-white/10 text-center text-lg tracking-[0.5em]" maxLength={6} required data-testid="reset-code-input" />
                 </div>
                 <div className="relative">
                   <Lock size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-[hsl(var(--muted-foreground))]" />
-                  <Input type="password" placeholder="New password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} className="pl-10 bg-white/5 border-white/10" required minLength={6} data-testid="reset-new-password-input" />
+                  <Input aria-label="New password" type="password" placeholder="New password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} className="pl-10 bg-white/5 border-white/10" required minLength={6} data-testid="reset-new-password-input" />
                 </div>
-                <Button type="submit" className="w-full bg-[hsl(var(--primary))] hover:brightness-110" disabled={loading} data-testid="reset-confirm-button">
+                <Button aria-label="reset confirm button" type="submit" className="w-full bg-[hsl(var(--primary))] hover:brightness-110" disabled={loading} data-testid="reset-confirm-button">
                   {loading ? 'Resetting...' : 'Reset Password'}
                 </Button>
               </form>

@@ -236,8 +236,9 @@ Respond with JSON: {"action": "SEARCH/DETAILS/RECOMMEND/RESPOND", "params": {...
                             "genres": movie.get("genres", []),
                             "rating": movie.get("vote_average")
                         }
-                except:
-                    pass
+                except Exception as e:
+                    import logging
+                    logging.getLogger("cinenexus").warning("Swallowed bare exception", exc_info=True)
             return {"error": "Movie not found"}
         
         elif action == "RECOMMEND":

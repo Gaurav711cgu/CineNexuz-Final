@@ -368,142 +368,127 @@ export default function HomePage() {
           background: GENRE_THEMES[currentGenreTheme]?.bg || 'transparent'
         }}
       />
-      {/* Hero Carousel */}
+      {/* Brutalist Editorial Hero */}
       {heroMovies.length > 0 && (
-        <div className="relative h-[500px] md:h-[600px] overflow-hidden">
+        <div className="relative h-[600px] md:h-[750px] overflow-hidden bg-[#0a0a0c] border-b border-white/10">
           <AnimatePresence mode="wait">
             <motion.div
               key={currentHeroIndex}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.7 }}
-              className="absolute inset-0"
+              initial={{ opacity: 0, scale: 1.02 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, filter: 'blur(10px)' }}
+              transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+              className="absolute inset-0 flex flex-col md:flex-row"
             >
-              <div className="absolute inset-0">
-                <img
-                  src={heroMovies[currentHeroIndex].backdrop_path ? `${TMDB_IMG}${heroMovies[currentHeroIndex].backdrop_path}` : ''}
-                  alt=""
-                  className="w-full h-full object-cover"
-                  onError={(e) => {
-                    e.target.src = 'https://images.unsplash.com/photo-1563089145-599997674d42?w=1200&h=600&fit=crop';
-                  }}
-                />
-                <div className="absolute inset-0 bg-gradient-to-r from-[hsl(var(--background))] via-[hsl(var(--background))]/80 to-transparent" />
-                <div className="absolute inset-0 bg-gradient-to-t from-[hsl(var(--background))] via-transparent to-transparent" />
-                <div className="noise-overlay" />
-              </div>
-              
-              <div className="relative z-10 flex flex-col justify-end h-full px-6 md:px-10 pb-12 max-w-3xl">
+              {/* Left Side: Harsh Typographic Block */}
+              <div className="w-full md:w-[45%] h-full relative z-20 flex flex-col justify-center px-6 md:px-12 pt-20 pb-12 bg-black/40 md:bg-transparent backdrop-blur-md md:backdrop-blur-none border-r border-white/5">
                 <motion.div 
-                  initial={{ opacity: 0, y: 30 }} 
-                  animate={{ opacity: 1, y: 0 }} 
-                  transition={{ duration: 0.8, delay: 0.2 }}
+                  initial={{ opacity: 0, x: -40 }} 
+                  animate={{ opacity: 1, x: 0 }} 
+                  transition={{ duration: 0.8, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
                 >
-                  <motion.div
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.6, delay: 0.4 }}
-                  >
-                    <Badge className="mb-4 bg-[hsl(var(--primary))]/20 text-[hsl(var(--primary))] border-[hsl(var(--primary))]/30">
-                      <TrendingUp size={12} className="mr-1" /> Trending Now
-                    </Badge>
-                  </motion.div>
+                  <div className="inline-block border border-[hsl(var(--primary))] text-[hsl(var(--primary))] px-3 py-1 text-[10px] uppercase tracking-[0.2em] font-bold mb-6 select-none">
+                    No. 0{currentHeroIndex + 1} — Trending
+                  </div>
                   
                   <motion.h1 
-                    className="text-4xl md:text-5xl lg:text-6xl font-semibold tracking-tight mb-3" 
-                    style={{ fontFamily: 'Space Grotesk' }}
+                    className="text-5xl md:text-7xl lg:text-8xl font-black uppercase tracking-tighter leading-[0.85] text-white mb-6" 
+                    style={{ fontFamily: 'Space Grotesk', wordBreak: 'break-word' }}
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.7, delay: 0.5 }}
+                    transition={{ duration: 0.7, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
                   >
                     {heroMovies[currentHeroIndex].title}
                   </motion.h1>
                   
                   <motion.p 
-                    className="text-sm md:text-base text-[hsl(var(--muted-foreground))] line-clamp-3 mb-6 max-w-xl break-words"
+                    className="text-sm md:text-base text-white/60 line-clamp-4 mb-8 max-w-md font-mono tracking-tight leading-relaxed"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
-                    transition={{ duration: 0.6, delay: 0.7 }}
+                    transition={{ duration: 0.6, delay: 0.5 }}
                   >
                     {heroMovies[currentHeroIndex].overview}
                   </motion.p>
                   
                   <motion.div 
-                    className="flex items-center gap-3 flex-wrap"
+                    className="flex flex-col sm:flex-row gap-4"
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6, delay: 0.9 }}
+                    transition={{ duration: 0.6, delay: 0.6 }}
                   >
                     <Link to={`/movie/${heroMovies[currentHeroIndex]._id}`}>
-                      <Button className="bg-[hsl(var(--primary))] hover:brightness-110 gap-2 shadow-[0_0_0_1px_rgba(255,255,255,0.08),0_12px_30px_rgba(124,58,237,0.18)]" data-testid="hero-play-button">
-                        <Play size={16} fill="white" /> Watch Now
+                      <Button className="w-full sm:w-auto rounded-none border border-[hsl(var(--primary))] bg-[hsl(var(--primary))] text-black hover:bg-transparent hover:text-[hsl(var(--primary))] transition-colors uppercase font-bold tracking-widest text-xs px-8 py-6" data-testid="hero-play-button">
+                        [ Watch Now ]
                       </Button>
                     </Link>
                     <Link to="/search">
-                      <Button variant="outline" className="gap-2 bg-white/5 border-white/10 hover:bg-white/10" data-testid="hero-search-button">
-                        <Search size={16} /> Discover More
+                      <Button variant="outline" className="w-full sm:w-auto rounded-none border-white/20 bg-transparent text-white hover:bg-white hover:text-black transition-colors uppercase font-bold tracking-widest text-xs px-8 py-6" data-testid="hero-search-button">
+                        Explore
                       </Button>
                     </Link>
                   </motion.div>
                   
                   <motion.div 
-                    className="flex items-center gap-4 mt-4"
+                    className="flex items-center gap-3 mt-8 font-mono text-[10px] text-white/40 uppercase tracking-widest"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
-                    transition={{ duration: 0.6, delay: 1.1 }}
+                    transition={{ duration: 0.6, delay: 0.7 }}
                   >
                     {heroMovies[currentHeroIndex].genres?.slice(0, 3).map(g => (
-                      <Badge key={g} variant="secondary" className="text-xs">{g}</Badge>
+                      <span key={g} className="border-b border-white/20 pb-0.5">{g}</span>
                     ))}
-                    <span className="text-xs text-[hsl(var(--muted-foreground))]">
-                      {heroMovies[currentHeroIndex].runtime && `${heroMovies[currentHeroIndex].runtime}min`} {heroMovies[currentHeroIndex].vote_average && `| ${heroMovies[currentHeroIndex].vote_average.toFixed(1)} rating`}
-                    </span>
+                    <span>//</span>
+                    <span>{heroMovies[currentHeroIndex].runtime && `${heroMovies[currentHeroIndex].runtime}M`}</span>
+                    <span>//</span>
+                    <span className="text-[hsl(var(--primary))]">{heroMovies[currentHeroIndex].vote_average && `${heroMovies[currentHeroIndex].vote_average.toFixed(1)} RTG`}</span>
                   </motion.div>
                 </motion.div>
+              </div>
+
+              {/* Right Side: Bleed-Edge Image */}
+              <div className="absolute inset-0 md:relative md:w-[55%] h-full z-0 md:z-10">
+                <div className="w-full h-full relative overflow-hidden">
+                  <img
+                    src={heroMovies[currentHeroIndex].backdrop_path ? `${TMDB_BACKDROP}${heroMovies[currentHeroIndex].backdrop_path}` : ''}
+                    alt=""
+                    className="w-full h-full object-cover object-right md:object-center filter contrast-125 saturate-[0.85]"
+                    onError={(e) => {
+                      e.target.src = 'https://images.unsplash.com/photo-1563089145-599997674d42?w=1200&h=600&fit=crop';
+                    }}
+                  />
+                  {/* Brutalist Hard Shadows instead of soft gradients */}
+                  <div className="absolute inset-0 bg-black/20 mix-blend-multiply" />
+                  <div className="absolute top-0 left-0 w-full h-24 bg-gradient-to-b from-black/80 to-transparent md:hidden" />
+                </div>
               </div>
             </motion.div>
           </AnimatePresence>
 
-          {/* Navigation Controls */}
+          {/* Navigation Controls - Minimalist Architecture */}
           {heroMovies.length > 1 && (
-            <>
-              {/* Previous/Next Buttons */}
+            <div className="absolute bottom-0 right-0 z-30 flex bg-black border-t border-l border-white/10">
               <button
                 onClick={prevHero}
-                className="absolute left-4 top-1/2 -translate-y-1/2 z-20 w-12 h-12 rounded-full bg-black/50 backdrop-blur-sm border border-white/10 flex items-center justify-center hover:bg-black/70 transition-all group"
+                className="w-16 h-16 flex items-center justify-center text-white/50 hover:text-white hover:bg-white/5 transition-colors border-r border-white/10"
                 data-testid="hero-prev-button"
                 aria-label="Previous movie"
               >
-                <ChevronLeft size={24} className="text-white group-hover:scale-110 transition-transform" />
+                <ChevronLeft size={20} strokeWidth={1.5} />
               </button>
               
+              <div className="flex items-center justify-center px-6 font-mono text-[10px] tracking-[0.2em] text-white/50 w-24">
+                0{currentHeroIndex + 1} / 0{heroMovies.length}
+              </div>
+
               <button
                 onClick={nextHero}
-                className="absolute right-4 top-1/2 -translate-y-1/2 z-20 w-12 h-12 rounded-full bg-black/50 backdrop-blur-sm border border-white/10 flex items-center justify-center hover:bg-black/70 transition-all group"
+                className="w-16 h-16 flex items-center justify-center text-white/50 hover:text-white hover:bg-white/5 transition-colors border-l border-white/10"
                 data-testid="hero-next-button"
                 aria-label="Next movie"
               >
-                <ChevronRight size={24} className="text-white group-hover:scale-110 transition-transform" />
+                <ChevronRight size={20} strokeWidth={1.5} />
               </button>
-
-              {/* Dot Indicators */}
-              <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2">
-                {heroMovies.map((_, index) => (
-                  <button
-                    key={index}
-                    onClick={() => goToHero(index)}
-                    className={`transition-all ${
-                      index === currentHeroIndex
-                        ? 'w-8 h-2 bg-[hsl(var(--primary))]'
-                        : 'w-2 h-2 bg-white/40 hover:bg-white/60'
-                    } rounded-full`}
-                    data-testid={`hero-dot-${index}`}
-                    aria-label={`Go to movie ${index + 1}`}
-                  />
-                ))}
-              </div>
-            </>
+            </div>
           )}
         </div>
       )}
@@ -533,14 +518,14 @@ export default function HomePage() {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
-            className="glass-card rounded-xl p-4 mb-8 flex items-center justify-between flex-wrap gap-3"
+            className="border-2 border-[hsl(var(--primary))] bg-black p-4 mb-12 flex items-center justify-between flex-wrap gap-4 uppercase font-mono tracking-widest text-xs"
           >
-            <div className="flex items-center gap-3">
-              <Sparkles size={18} className="text-[hsl(var(--primary))]" />
-              <span className="text-sm">Sign in for personalized recommendations and to rent/buy movies</span>
+            <div className="flex items-center gap-4 text-[hsl(var(--primary))]">
+              <Sparkles size={16} strokeWidth={2} />
+              <span>[ Authentication Required For Advanced Recommendations ]</span>
             </div>
             <Link to="/auth/login">
-              <Button size="sm" className="bg-[hsl(var(--primary))] hover:brightness-110" data-testid="home-login-button">
+              <Button size="sm" className="rounded-none border border-[hsl(var(--primary))] bg-[hsl(var(--primary))] text-black hover:bg-transparent hover:text-[hsl(var(--primary))] transition-colors font-bold uppercase tracking-widest text-[10px]" data-testid="home-login-button">
                 Sign In
               </Button>
             </Link>
@@ -553,15 +538,15 @@ export default function HomePage() {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
-            className="glass-card rounded-xl p-4 mb-8 flex items-center justify-between flex-wrap gap-3 border border-[hsl(var(--primary))]/30"
+            className="border-2 border-cyan-500 bg-black p-4 mb-12 flex items-center justify-between flex-wrap gap-4 uppercase font-mono tracking-widest text-xs"
           >
-            <div className="flex items-center gap-3">
-              <Dna size={18} className="text-[hsl(var(--primary))]" />
-              <span className="text-sm">Complete your Taste DNA quiz to unlock personalized recommendations</span>
+            <div className="flex items-center gap-4 text-cyan-500">
+              <Dna size={16} strokeWidth={2} />
+              <span>[ Missing Taste Data: Complete DNA Sequence ]</span>
             </div>
             <Link to="/onboarding">
-              <Button size="sm" className="bg-[hsl(var(--primary))] hover:brightness-110" data-testid="home-onboarding-cta">
-                Start Quiz
+              <Button size="sm" className="rounded-none border border-cyan-500 bg-cyan-500 text-black hover:bg-transparent hover:text-cyan-500 transition-colors font-bold uppercase tracking-widest text-[10px]" data-testid="home-onboarding-cta">
+                Start Sequence
               </Button>
             </Link>
           </motion.div>
@@ -915,19 +900,17 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* ── Surprise Me Floating Action Button ── */}
+      {/* ── Brutalist Surprise Me Button ── */}
       <motion.button
         id="surprise-me-fab"
         aria-label="Surprise Me"
         onClick={triggerRoulette}
-        className="fixed bottom-8 right-6 z-50 flex items-center gap-2 px-5 py-3 rounded-full
-          bg-gradient-to-r from-violet-600 to-cyan-500 text-white font-semibold text-sm shadow-2xl
-          hover:shadow-violet-500/40 transition-all duration-300 select-none"
-        whileHover={{ scale: 1.06 }}
-        whileTap={{ scale: 0.95 }}
+        className="fixed bottom-8 right-8 z-50 flex items-center gap-3 px-6 py-4 rounded-none
+          border-2 border-white bg-black text-white font-bold text-xs uppercase tracking-widest shadow-[8px_8px_0px_0px_rgba(255,255,255,1)]
+          hover:shadow-[4px_4px_0px_0px_rgba(255,255,255,1)] hover:translate-x-1 hover:translate-y-1 transition-all duration-200 select-none"
       >
-        <Shuffle size={18} />
-        Surprise Me
+        <Shuffle size={18} strokeWidth={2.5} />
+        [ Surprise Me ]
       </motion.button>
 
       {/* ── Roulette Modal ── */}
@@ -947,13 +930,13 @@ export default function HomePage() {
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.85, opacity: 0 }}
               transition={{ type: 'spring', damping: 20, stiffness: 260 }}
-              className="relative w-full max-w-lg rounded-2xl overflow-hidden bg-[hsl(var(--card))] border border-white/10 shadow-2xl"
+              className="relative w-full max-w-lg rounded-none overflow-hidden bg-black border-2 border-white shadow-[12px_12px_0px_0px_rgba(255,255,255,1)]"
               style={{ maxHeight: '90vh', overflowY: 'auto' }}
             >
               {/* Close */}
               <button
                 onClick={() => { setRouletteOpen(false); setRouletteState('idle'); }}
-                className="absolute top-4 right-4 z-10 p-1.5 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors"
+                className="absolute top-4 right-4 z-10 p-2 bg-transparent hover:bg-white hover:text-black border border-white text-white transition-colors"
                 aria-label="Close"
               >
                 <X size={18} />
@@ -968,20 +951,20 @@ export default function HomePage() {
                   : null;
                 return (
                   <div className="flex flex-col items-center justify-center p-8 min-h-[340px]">
-                    <div className="w-36 aspect-[2/3] rounded-xl overflow-hidden mb-4 ring-2 ring-violet-500 shadow-lg shadow-violet-500/30">
+                    <div className="w-36 aspect-[2/3] overflow-hidden mb-4 border border-[hsl(var(--primary))] shadow-[8px_8px_0px_0px_hsl(var(--primary))]">
                       {posterUrl
-                        ? <img src={posterUrl} alt="" className="w-full h-full object-cover" />
-                        : <div className="w-full h-full bg-white/5 flex items-center justify-center"><Film size={40} className="text-white/20" /></div>
+                        ? <img src={posterUrl} alt="" className="w-full h-full object-cover filter grayscale opacity-70 mix-blend-screen" />
+                        : <div className="w-full h-full bg-black flex items-center justify-center border border-white/20"><Film size={40} className="text-[hsl(var(--primary))]" /></div>
                       }
                     </div>
-                    <div className="flex gap-1.5 mt-2">
+                    <div className="flex gap-2 mt-4">
                       {[0,1,2].map(i => (
-                        <motion.div key={i} className="w-2 h-2 rounded-full bg-violet-400"
-                          animate={{ opacity: [0.3,1,0.3] }}
+                        <motion.div key={i} className="w-3 h-3 bg-[hsl(var(--primary))]"
+                          animate={{ opacity: [0.1, 1, 0.1] }}
                           transition={{ duration: 0.6, delay: i*0.2, repeat: Infinity }} />
                       ))}
                     </div>
-                    <p className="mt-3 text-sm text-white/50">Finding something great for you...</p>
+                    <p className="mt-6 text-xs uppercase tracking-widest text-[hsl(var(--primary))] font-mono">INITIATING ROULETTE SEQUENCE...</p>
                   </div>
                 );
               })()}
@@ -998,67 +981,67 @@ export default function HomePage() {
                 return (
                   <div>
                     {/* Backdrop hero */}
-                    <div className="relative h-44 bg-gradient-to-br from-violet-900 to-slate-900 overflow-hidden">
-                      {backdropUrl && <img src={backdropUrl} alt="" className="w-full h-full object-cover opacity-40" />}
-                      <div className="absolute inset-0 bg-gradient-to-t from-[hsl(var(--card))] via-transparent to-transparent" />
+                    <div className="relative h-44 bg-black overflow-hidden border-b border-white/20">
+                      {backdropUrl && <img src={backdropUrl} alt="" className="w-full h-full object-cover opacity-30 filter grayscale" />}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent" />
                       {/* Poster floating */}
-                      <div className="absolute -bottom-10 left-6 w-20 aspect-[2/3] rounded-lg overflow-hidden ring-2 ring-white/20 shadow-xl">
+                      <div className="absolute -bottom-8 left-6 w-24 aspect-[2/3] overflow-hidden border border-white shadow-[4px_4px_0px_0px_rgba(255,255,255,1)]">
                         {posterUrl
                           ? <img src={posterUrl} alt={m.title} className="w-full h-full object-cover" />
-                          : <div className="w-full h-full bg-white/10 flex items-center justify-center"><Film size={24} className="text-white/30" /></div>
+                          : <div className="w-full h-full bg-black flex items-center justify-center"><Film size={24} className="text-white" /></div>
                         }
                       </div>
                     </div>
 
                     {/* Details */}
-                    <div className="pt-14 px-6 pb-6">
-                      <h2 className="text-xl font-bold text-white mb-1" style={{fontFamily:'Space Grotesk'}}>{m.title}</h2>
+                    <div className="pt-12 px-6 pb-6">
+                      <h2 className="text-2xl font-black uppercase text-white mb-2 tracking-tighter" style={{fontFamily:'Space Grotesk'}}>{m.title}</h2>
 
-                      <div className="flex flex-wrap items-center gap-3 mb-3">
+                      <div className="flex flex-wrap items-center gap-2 mb-4 font-mono text-[10px] tracking-widest text-white/50 uppercase">
                         {m.release_date && (
-                          <span className="text-xs text-white/50">{m.release_date.slice(0,4)}</span>
+                          <span className="border border-white/20 px-2 py-1">{m.release_date.slice(0,4)}</span>
                         )}
                         {m.vote_average > 0 && (
-                          <span className="flex items-center gap-1 text-xs text-amber-400">
-                            <Star size={11} className="fill-amber-400" /> {Number(m.vote_average).toFixed(1)} IMDb
+                          <span className="border border-[hsl(var(--primary))] text-[hsl(var(--primary))] px-2 py-1">
+                            {Number(m.vote_average).toFixed(1)} RTG
                           </span>
                         )}
                         {m.genres?.slice(0,2).map(g => (
-                          <span key={g} className="px-2 py-0.5 rounded-full bg-white/10 text-white/70 text-[11px]">{g}</span>
+                          <span key={g} className="px-2 py-1 border-b border-white/20">{g}</span>
                         ))}
                       </div>
 
                       {m.overview && (
-                        <p className="text-sm text-white/70 leading-relaxed line-clamp-3 mb-4 break-words">{m.overview}</p>
+                        <p className="text-xs text-white/70 leading-relaxed mb-6 font-mono break-words">{m.overview}</p>
                       )}
 
                       {/* Action buttons */}
-                      <div className="flex gap-3 mb-5">
+                      <div className="flex flex-col sm:flex-row gap-3 mb-6">
                         <Link
                           to={`/movie/${m._id || m.movie_id}`}
-                          className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl
-                            bg-gradient-to-r from-violet-600 to-cyan-500 text-white text-sm font-semibold
-                            hover:opacity-90 transition-opacity"
+                          className="flex-1 flex items-center justify-center gap-2 py-3 rounded-none
+                            border border-[hsl(var(--primary))] bg-[hsl(var(--primary))] text-black text-xs font-bold uppercase tracking-widest
+                            hover:bg-transparent hover:text-[hsl(var(--primary))] transition-colors"
                           onClick={() => setRouletteOpen(false)}
                         >
-                          <Play size={15} /> View Details
+                          <Play size={15} /> [ Details ]
                         </Link>
                         {m.trailer_key && (
                           <a
                             href={`https://www.youtube.com/watch?v=${m.trailer_key}`}
                             target="_blank" rel="noopener noreferrer"
-                            className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl
-                              bg-white/10 hover:bg-white/15 text-white text-sm font-semibold transition-colors"
+                            className="flex items-center justify-center gap-2 px-4 py-3 rounded-none
+                              border border-white/20 hover:bg-white hover:text-black text-white text-xs font-bold uppercase tracking-widest transition-colors"
                           >
                             <Tv size={15} /> Trailer
                           </a>
                         )}
                         <button
                           onClick={triggerRoulette}
-                          className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl
-                            bg-white/10 hover:bg-white/15 text-white text-sm font-semibold transition-colors"
+                          className="flex items-center justify-center gap-2 px-4 py-3 rounded-none
+                            border border-white/20 hover:bg-white hover:text-black text-white text-xs font-bold uppercase tracking-widest transition-colors"
                         >
-                          <Shuffle size={15} /> Again
+                          <Shuffle size={15} /> Reroll
                         </button>
                       </div>
 

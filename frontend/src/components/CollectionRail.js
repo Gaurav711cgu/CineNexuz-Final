@@ -75,7 +75,7 @@ export function CollectionRail({ collection, movies, loading, onMovieHover }) {
                 onMouseEnter={() => onMovieHover && onMovieHover(movie)}
               >
                 {/* Poster */}
-                <div className="relative aspect-[2/3] rounded-lg overflow-hidden bg-white/5">
+                <div className="relative aspect-[2/3] rounded-none overflow-hidden bg-black border border-white/20 group-hover:border-white transition-colors">
                   {(movie.poster_url || movie.poster_path) ? (
                     <motion.img
                       src={movie.poster_url 
@@ -83,22 +83,22 @@ export function CollectionRail({ collection, movies, loading, onMovieHover }) {
                         : `${TMDB_IMG}${movie.poster_path}`
                       }
                       alt={movie.title}
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                      className="w-full h-full object-cover filter grayscale group-hover:grayscale-0 transition-transform duration-500 group-hover:scale-105"
                       whileHover={{ scale: 1.05 }}
                     />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-white/10 to-white/5">
+                    <div className="w-full h-full flex items-center justify-center bg-black border border-white/10">
                       <Film size={40} className="text-white/40" />
                     </div>
                   )}
 
-                  {/* Gradient Overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                  {/* Brutalist Hard Shadow Overlay */}
+                  <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-200 border-[4px] border-transparent group-hover:border-[hsl(var(--primary))]" />
 
                   {/* Collection Badge */}
-                  <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <div className={`px-2 py-1 rounded-full text-[10px] font-bold text-white bg-gradient-to-r ${gradient}`}>
-                      {collection.theme.toUpperCase()}
+                  <div className="absolute top-0 right-0 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <div className={`px-2 py-1 text-[10px] font-bold text-black uppercase tracking-widest bg-gradient-to-r ${gradient}`}>
+                      [{collection.theme}]
                     </div>
                   </div>
 
@@ -107,8 +107,8 @@ export function CollectionRail({ collection, movies, loading, onMovieHover }) {
                     className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
                     initial={false}
                   >
-                    <div className="w-16 h-16 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center">
-                      <div className="w-0 h-0 border-l-[12px] border-l-white border-y-[8px] border-y-transparent ml-1" />
+                    <div className="border border-[hsl(var(--primary))] bg-[hsl(var(--primary))] text-black px-6 py-2 uppercase font-bold tracking-widest text-[10px]">
+                      [ Play ]
                     </div>
                   </motion.div>
                 </div>

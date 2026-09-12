@@ -79,7 +79,7 @@ class DistributedEventBus:
                         else:
                             h(event)
                     except Exception as e:
-                        logger.error(f"Error handling event {event.event_id} in worker {worker_id}: {e}")
+                        logger.exception(f"Error handling event {event.event_id} in worker {worker_id}: {e}")
                         event.retry_count += 1
                         if event.retry_count > 3:
                             self.dlq.append(event)
@@ -89,7 +89,7 @@ class DistributedEventBus:
             except asyncio.CancelledError:
                 break
             except Exception as e:
-                logger.error(f"Worker {worker_id} error: {e}")
+                logger.exception(f"Worker {worker_id} error: {e}")
 
     def get_stats(self) -> Dict[str, Any]:
         """Returns event bus telemetry."""

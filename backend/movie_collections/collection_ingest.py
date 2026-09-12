@@ -24,7 +24,7 @@ async def fetch_collection_from_tmdb(collection_id: int):
                 logger.error(f"Failed to fetch TMDB collection {collection_id}: {resp.status_code}")
                 return None
     except Exception as e:
-        logger.error(f"Error fetching collection {collection_id} from TMDB: {e}")
+        logger.exception(f"Error fetching collection {collection_id} from TMDB: {e}")
         return None
 
 async def upsert_collection(collection_data: dict, current_movie_tmdb_id: int, db):

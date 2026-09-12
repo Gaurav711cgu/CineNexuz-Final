@@ -70,5 +70,5 @@ class LoreRAGPipeline:
                 ]
             }
         except Exception as e:
-            logger.error(f"Lore RAG Pipeline failed: {e}")
+            logger.exception(f"Lore RAG Pipeline failed: {e}")
             return {"easter_eggs": []}

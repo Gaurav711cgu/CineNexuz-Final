@@ -157,17 +157,16 @@ export default function MovieDetailPage() {
   return (
     <div className="min-h-screen">
       {/* Backdrop */}
-      <div className="relative h-[350px] md:h-[450px] overflow-hidden">
+      <div className="relative h-[350px] md:h-[450px] overflow-hidden border-b-4 border-[hsl(var(--primary))]">
         <img
           src={getBackdropUrl(movie)}
           alt=""
-          className="w-full h-full object-cover"
+          className="w-full h-full object-cover filter grayscale"
           onError={(e) => {
             e.target.src = 'https://images.unsplash.com/photo-1563089145-599997674d42?w=1200&h=450&fit=crop';
           }}
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-[hsl(var(--background))] via-[hsl(var(--background))]/60 to-transparent" />
-        <div className="absolute inset-0 bg-gradient-to-r from-[hsl(var(--background))]/80 to-transparent" />
+        <div className="absolute inset-0 bg-black/60" />
       </div>
 
       {/* Content */}
@@ -175,7 +174,7 @@ export default function MovieDetailPage() {
         <div className="lg:grid lg:grid-cols-[300px_1fr] gap-8 max-w-[1400px]">
           {/* Poster */}
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-            <div className="rounded-xl overflow-hidden shadow-2xl w-[200px] md:w-[300px]">
+            <div className="rounded-none overflow-hidden border-2 border-white/20 w-[200px] md:w-[300px] shadow-[8px_8px_0px_0px_hsl(var(--primary))] bg-black p-2">
               <img
                 src={getPosterUrl(movie)}
                 alt={movie.title}
@@ -273,9 +272,9 @@ export default function MovieDetailPage() {
 
             {/* Access info */}
             {access && !access.allowed && (
-              <div className="glass-card rounded-lg p-3 mb-6 flex items-center gap-3 text-sm">
-                <Lock size={16} className="text-[hsl(var(--muted-foreground))]" />
-                <span className="text-[hsl(var(--muted-foreground))]">{access.message}</span>
+              <div className="border-l-4 border-[hsl(var(--destructive))] bg-black p-4 mb-6 flex items-center gap-3 text-sm font-mono uppercase tracking-wide">
+                <Lock size={16} className="text-[hsl(var(--destructive))]" />
+                <span className="text-[hsl(var(--destructive))] font-bold">{access.message}</span>
               </div>
             )}
 
@@ -286,27 +285,29 @@ export default function MovieDetailPage() {
                   href={`https://www.youtube.com/watch?v=${movie.trailer_key}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="glass-card rounded-xl p-4 flex items-center gap-3 hover:bg-white/8 transition-colors"
+                  className="block border-2 border-white/20 bg-black p-4 hover:border-[hsl(var(--primary))] hover:shadow-[4px_4px_0px_0px_hsl(var(--primary))] transition-all group"
                   data-testid="movie-trailer-link"
                 >
-                  <div className="w-10 h-10 rounded-full bg-red-600 flex items-center justify-center flex-shrink-0">
-                    <Play size={16} fill="white" className="ml-0.5" />
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 bg-white text-black flex items-center justify-center flex-shrink-0 group-hover:bg-[hsl(var(--primary))] transition-colors">
+                      <Play size={20} fill="currentColor" className="ml-1" />
+                    </div>
+                    <div>
+                      <span className="text-lg font-black uppercase tracking-tight block">Watch Trailer</span>
+                      <span className="text-xs text-white/50 font-mono uppercase tracking-widest block mt-1">on YouTube</span>
+                    </div>
+                    <ExternalLink size={20} className="ml-auto text-white/50 group-hover:text-white transition-colors" />
                   </div>
-                  <div>
-                    <span className="text-sm font-medium">Watch Trailer</span>
-                    <span className="text-xs text-[hsl(var(--muted-foreground))] block">on YouTube</span>
-                  </div>
-                  <ExternalLink size={14} className="ml-auto text-[hsl(var(--muted-foreground))]" />
                 </a>
               </div>
             )}
 
             {/* Where to Watch - OTT Providers */}
             {watchProviders && (
-              <div className="mb-8 p-6 rounded-xl bg-[hsl(var(--card))] border border-white/10" data-testid="watch-providers-section">
-                <div className="flex items-center gap-3 mb-4">
-                  <Tv size={24} className="text-[hsl(var(--accent))]" />
-                  <h3 className="text-lg font-bold" style={{ fontFamily: 'Space Grotesk' }}>
+              <div className="mb-8 p-6 border-2 border-white/20 bg-black shadow-[8px_8px_0px_0px_rgba(255,255,255,0.1)]" data-testid="watch-providers-section">
+                <div className="flex items-center gap-3 mb-6 pb-4 border-b-2 border-white/10">
+                  <Tv size={24} className="text-[hsl(var(--primary))]" />
+                  <h3 className="text-xl font-black uppercase tracking-widest" style={{ fontFamily: 'Space Grotesk' }}>
                     Where to Watch
                   </h3>
                 </div>
@@ -323,15 +324,15 @@ export default function MovieDetailPage() {
 
                 {/* TMDB link */}
                 {watchProviders.tmdb_link && (
-                  <div className="mt-4 pt-4 border-t border-white/10">
+                  <div className="mt-6 pt-4 border-t-2 border-white/10">
                     <a 
                       href={watchProviders.tmdb_link} 
                       target="_blank" 
                       rel="noopener noreferrer"
-                      className="text-sm text-[hsl(var(--muted-foreground))] hover:text-[hsl(var(--foreground))] 
+                      className="text-xs font-mono uppercase tracking-widest text-white/50 hover:text-[hsl(var(--primary))] 
                         inline-flex items-center gap-2 transition-colors"
                     >
-                      <span>View all streaming options</span>
+                      <span>[View all options]</span>
                       <ExternalLink size={14} />
                     </a>
                   </div>
@@ -347,21 +348,21 @@ export default function MovieDetailPage() {
 
             {/* Tabs */}
             <Tabs defaultValue={franchiseParts.length > 0 ? "franchise" : "overview"} className="mt-6">
-              <TabsList className="bg-white/5">
+              <TabsList className="bg-black border border-white/20 p-0 rounded-none h-auto flex flex-wrap">
                 {franchiseParts.length > 0 && (
-                  <TabsTrigger value="franchise" data-testid="movie-tab-franchise">More Like This</TabsTrigger>
+                  <TabsTrigger value="franchise" className="rounded-none border-r border-white/20 data-[state=active]:bg-white data-[state=active]:text-black uppercase font-bold tracking-widest text-[10px] py-3 px-6" data-testid="movie-tab-franchise">More Like This</TabsTrigger>
                 )}
-                <TabsTrigger value="overview" data-testid="movie-tab-overview">Overview</TabsTrigger>
-                <TabsTrigger value="cast" data-testid="movie-tab-cast">Cast</TabsTrigger>
-                <TabsTrigger value="similar" data-testid="movie-tab-similar">Similar</TabsTrigger>
+                <TabsTrigger value="overview" className="rounded-none border-r border-white/20 data-[state=active]:bg-white data-[state=active]:text-black uppercase font-bold tracking-widest text-[10px] py-3 px-6" data-testid="movie-tab-overview">Overview</TabsTrigger>
+                <TabsTrigger value="cast" className="rounded-none border-r border-white/20 data-[state=active]:bg-white data-[state=active]:text-black uppercase font-bold tracking-widest text-[10px] py-3 px-6" data-testid="movie-tab-cast">Cast</TabsTrigger>
+                <TabsTrigger value="similar" className="rounded-none data-[state=active]:bg-white data-[state=active]:text-black uppercase font-bold tracking-widest text-[10px] py-3 px-6" data-testid="movie-tab-similar">Similar</TabsTrigger>
               </TabsList>
 
               {/* Franchise/More Like This Tab */}
               {franchiseParts.length > 0 && (
-                <TabsContent value="franchise" className="mt-4">
-                  <div className="mb-3">
-                    <h3 className="text-lg font-semibold">From the Same Franchise</h3>
-                    <p className="text-sm text-[hsl(var(--muted-foreground))]">Continue your journey in this universe</p>
+                <TabsContent value="franchise" className="mt-8">
+                  <div className="mb-6 border-l-4 border-[hsl(var(--primary))] pl-4">
+                    <h3 className="text-xl font-black uppercase tracking-widest">From the Same Franchise</h3>
+                    <p className="text-xs font-mono uppercase text-white/50 tracking-wide mt-1">Continue your journey</p>
                   </div>
                   <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
                     {franchiseParts.map(m => (
@@ -371,24 +372,24 @@ export default function MovieDetailPage() {
                 </TabsContent>
               )}
 
-              <TabsContent value="overview" className="mt-4">
+              <TabsContent value="overview" className="mt-8">
                 <div className="space-y-6">
                   {synopsis ? (
-                    <div>
-                      <p className="text-sm md:text-base leading-relaxed text-[hsl(var(--muted-foreground))] break-words">
+                    <div className="border-2 border-white/20 p-6 bg-black">
+                      <p className="text-sm md:text-base leading-relaxed text-white font-mono break-words">
                         {synopsis}
                       </p>
                       {synopsisSource === 'ai_generated' && (
-                        <p className="text-xs text-violet-400/60 mt-2 flex items-center gap-1">
-                          <Sparkles size={10} /> AI-enhanced synopsis
+                        <p className="text-[10px] uppercase tracking-widest text-[hsl(var(--primary))] mt-4 flex items-center gap-2 font-bold">
+                          <Sparkles size={12} /> AI-enhanced synopsis
                         </p>
                       )}
                     </div>
                   ) : (
-                    <div className="space-y-2">
-                      <div className="h-4 bg-white/5 rounded animate-pulse w-full" />
-                      <div className="h-4 bg-white/5 rounded animate-pulse w-5/6" />
-                      <div className="h-4 bg-white/5 rounded animate-pulse w-4/6" />
+                    <div className="space-y-2 border-2 border-white/20 p-6 bg-black">
+                      <div className="h-4 bg-white/20 animate-pulse w-full" />
+                      <div className="h-4 bg-white/20 animate-pulse w-5/6" />
+                      <div className="h-4 bg-white/20 animate-pulse w-4/6" />
                     </div>
                   )}
 
@@ -397,28 +398,28 @@ export default function MovieDetailPage() {
                 </div>
               </TabsContent>
 
-              <TabsContent value="cast" className="mt-4">
+              <TabsContent value="cast" className="mt-8">
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
                   {movie.cast?.map(actor => (
-                    <Link key={actor._id} to={`/actor/${actor._id}`} className="glass-card rounded-xl p-3 hover:bg-white/8 transition-colors" data-testid={`cast-card-${actor.tmdb_id}`}>
-                      <div className="w-16 h-16 rounded-full overflow-hidden mx-auto mb-2 bg-white/5">
+                    <Link key={actor._id} to={`/actor/${actor._id}`} className="block border-2 border-white/20 bg-black hover:border-[hsl(var(--primary))] hover:shadow-[4px_4px_0px_0px_hsl(var(--primary))] transition-all p-3" data-testid={`cast-card-${actor.tmdb_id}`}>
+                      <div className="w-full aspect-square overflow-hidden mb-3 bg-white/5 border border-white/10">
                         {actor.profile_path ? (
                           <img 
                             src={`${TMDB_IMG}${actor.profile_path}`} 
                             alt={actor.name} 
-                            className="w-full h-full object-cover" 
+                            className="w-full h-full object-cover filter grayscale hover:grayscale-0 transition-all duration-300" 
                             onError={(e) => {
                               e.target.src = 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&h=150&fit=crop';
                             }}
                           />
                         ) : (
-                          <div className="w-full h-full flex items-center justify-center text-xl">
+                          <div className="w-full h-full flex items-center justify-center text-3xl font-black uppercase text-white/20">
                             {actor.name?.[0]}
                           </div>
                         )}
                       </div>
-                      <p className="text-sm font-medium text-center truncate">{actor.name}</p>
-                      <p className="text-xs text-center text-[hsl(var(--muted-foreground))] truncate">{actor.character}</p>
+                      <p className="text-sm font-black uppercase tracking-tight text-white truncate">{actor.name}</p>
+                      <p className="text-[10px] font-mono uppercase tracking-widest text-[hsl(var(--primary))] truncate mt-1">{actor.character}</p>
                     </Link>
                   ))}
                 </div>

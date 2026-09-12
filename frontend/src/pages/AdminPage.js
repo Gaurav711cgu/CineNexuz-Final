@@ -162,14 +162,14 @@ export default function AdminPage() {
                   <Plus size={14} /> Add Movie
                 </Button>
               </DialogTrigger>
-              <DialogContent className="glass-card border-white/10 max-w-2xl max-h-[85vh] overflow-y-auto">
+              <DialogContent className="rounded-none border-2 border-white/20 bg-black max-w-2xl max-h-[85vh] overflow-y-auto">
                 <DialogHeader>
                   <DialogTitle style={{ fontFamily: 'Space Grotesk' }}>Add Custom Movie</DialogTitle>
                 </DialogHeader>
                 <AddMovieForm onSubmit={handleAddMovie} onCancel={() => setAddMovieOpen(false)} />
               </DialogContent>
             </Dialog>
-            <Button variant="outline" className="gap-2 glass-card" onClick={handleRefresh} disabled={refreshing} data-testid="admin-refresh-button">
+            <Button variant="outline" className="gap-2 rounded-none border-2 border-white/20 bg-black" onClick={handleRefresh} disabled={refreshing} data-testid="admin-refresh-button">
               <RefreshCw size={14} className={refreshing ? 'animate-spin' : ''} /> Refresh TMDB
             </Button>
           </div>
@@ -185,7 +185,7 @@ export default function AdminPage() {
               { label: 'Revenue', value: `$${stats.total_revenue?.toFixed(2)}`, icon: DollarSign, color: 'text-yellow-400' },
               { label: 'Active Subs', value: stats.active_subscriptions, icon: BarChart3, color: 'text-cyan-400' },
             ].map((s, i) => (
-              <Card key={i} className="glass-card border-white/10">
+              <Card key={i} className="rounded-none border-2 border-white/20 bg-black">
                 <CardContent className="p-4">
                   <s.icon size={18} className={`${s.color} mb-2`} />
                   <p className="text-2xl font-bold tabular-nums">{s.value}</p>
@@ -210,7 +210,7 @@ export default function AdminPage() {
           <TabsContent value="movies" className="mt-4">
             <div className="space-y-2">
               {movies.map(movie => (
-                <div key={movie._id} className="glass-card rounded-lg p-3 flex items-center gap-4">
+                <div key={movie._id} className="rounded-none border-2 border-white/20 bg-black rounded-lg p-3 flex items-center gap-4">
                   <img
                     src={movie.poster_url_custom || (movie.poster_path?.startsWith('http') ? movie.poster_path : movie.poster_path ? `${TMDB_IMG}${movie.poster_path}` : '')}
                     alt="" 
@@ -254,7 +254,7 @@ export default function AdminPage() {
           <TabsContent value="users" className="mt-4">
             <div className="space-y-2">
               {users.map(u => (
-                <div key={u._id} className="glass-card rounded-lg p-3 flex items-center gap-4">
+                <div key={u._id} className="rounded-none border-2 border-white/20 bg-black rounded-lg p-3 flex items-center gap-4">
                   <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-sm font-bold">
                     {u.name?.[0]?.toUpperCase() || '?'}
                   </div>
@@ -274,7 +274,7 @@ export default function AdminPage() {
           <TabsContent value="transactions" className="mt-4">
             <div className="space-y-2">
               {stats?.recent_transactions?.map((tx, i) => (
-                <div key={i} className="glass-card rounded-lg p-3 flex items-center gap-4">
+                <div key={i} className="rounded-none border-2 border-white/20 bg-black rounded-lg p-3 flex items-center gap-4">
                   <DollarSign size={16} className="text-green-400" />
                   <div className="flex-1">
                     <p className="text-sm font-medium capitalize">{tx.purchase_type || 'payment'}</p>
@@ -849,7 +849,7 @@ function AnalyticsDashboard({ data }) {
     <div className="space-y-6">
       {/* Revenue Trend */}
       {data.revenue_trend?.length > 0 && (
-        <Card className="glass-card border-white/10">
+        <Card className="rounded-none border-2 border-white/20 bg-black">
           <CardHeader><CardTitle className="text-base">Revenue Trend</CardTitle></CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={250}>
@@ -868,7 +868,7 @@ function AnalyticsDashboard({ data }) {
       <div className="grid md:grid-cols-2 gap-6">
         {/* Purchase Type Breakdown */}
         {typeBreakdown.length > 0 && (
-          <Card className="glass-card border-white/10">
+          <Card className="rounded-none border-2 border-white/20 bg-black">
             <CardHeader><CardTitle className="text-base">Revenue by Type</CardTitle></CardHeader>
             <CardContent>
               <ResponsiveContainer width="100%" height={200}>
@@ -886,7 +886,7 @@ function AnalyticsDashboard({ data }) {
 
         {/* Subscription Breakdown */}
         {subBreakdown.length > 0 && (
-          <Card className="glass-card border-white/10">
+          <Card className="rounded-none border-2 border-white/20 bg-black">
             <CardHeader><CardTitle className="text-base">Active Subscriptions</CardTitle></CardHeader>
             <CardContent>
               <ResponsiveContainer width="100%" height={200}>
@@ -905,7 +905,7 @@ function AnalyticsDashboard({ data }) {
 
       {/* Top Movies */}
       {data.top_movies?.length > 0 && (
-        <Card className="glass-card border-white/10">
+        <Card className="rounded-none border-2 border-white/20 bg-black">
           <CardHeader><CardTitle className="text-base">Top Movies by Purchases</CardTitle></CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={200}>
@@ -923,7 +923,7 @@ function AnalyticsDashboard({ data }) {
 
       {/* Signup Trend */}
       {data.signup_trend?.length > 0 && (
-        <Card className="glass-card border-white/10">
+        <Card className="rounded-none border-2 border-white/20 bg-black">
           <CardHeader><CardTitle className="text-base">User Signups</CardTitle></CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={200}>
@@ -984,7 +984,7 @@ function MLModelDashboard({ history, loading, onRetrain }) {
     <div className="space-y-6">
       {/* Overview Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Card className="glass-card border-white/10 bg-gradient-to-br from-purple-950/20 to-transparent">
+        <Card className="rounded-none border-2 border-white/20 bg-black bg-gradient-to-br from-purple-950/20 to-transparent">
           <CardContent className="p-5 flex items-center justify-between">
             <div>
               <p className="text-xs uppercase tracking-widest text-purple-400 font-semibold mb-1">Current Model RMSE</p>
@@ -996,7 +996,7 @@ function MLModelDashboard({ history, loading, onRetrain }) {
           </CardContent>
         </Card>
 
-        <Card className="glass-card border-white/10">
+        <Card className="rounded-none border-2 border-white/20 bg-black">
           <CardContent className="p-5 flex items-center justify-between">
             <div>
               <p className="text-xs uppercase tracking-widest text-blue-400 font-semibold mb-1">Total Interactions</p>
@@ -1008,7 +1008,7 @@ function MLModelDashboard({ history, loading, onRetrain }) {
           </CardContent>
         </Card>
 
-        <Card className="glass-card border-white/10">
+        <Card className="rounded-none border-2 border-white/20 bg-black">
           <CardContent className="p-5 flex items-center justify-between">
             <div>
               <p className="text-xs uppercase tracking-widest text-teal-400 font-semibold mb-1">Last Trained</p>
@@ -1022,7 +1022,7 @@ function MLModelDashboard({ history, loading, onRetrain }) {
           </CardContent>
         </Card>
 
-        <Card className="glass-card border-white/10 flex flex-col justify-center p-5">
+        <Card className="rounded-none border-2 border-white/20 bg-black flex flex-col justify-center p-5">
           <Button 
             onClick={onRetrain} 
             disabled={loading}
@@ -1046,7 +1046,7 @@ function MLModelDashboard({ history, loading, onRetrain }) {
       {/* Bento Grid: Active ML Subsystems */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* Supabase pgvector */}
-        <Card className="glass-card border-white/10 p-5 space-y-4 bg-gradient-to-br from-emerald-950/10 to-transparent">
+        <Card className="rounded-none border-2 border-white/20 bg-black p-5 space-y-4 bg-gradient-to-br from-emerald-950/10 to-transparent">
           <div className="flex items-center justify-between">
             <h4 className="text-xs font-black uppercase tracking-widest text-white/95">Supabase pgvector</h4>
             <div className={`px-2 py-0.5 rounded text-[9px] font-mono font-bold ${
@@ -1066,7 +1066,7 @@ function MLModelDashboard({ history, loading, onRetrain }) {
         </Card>
 
         {/* Local Vector Engine */}
-        <Card className="glass-card border-white/10 p-5 space-y-4 bg-gradient-to-br from-purple-950/10 to-transparent">
+        <Card className="rounded-none border-2 border-white/20 bg-black p-5 space-y-4 bg-gradient-to-br from-purple-950/10 to-transparent">
           <div className="flex items-center justify-between">
             <h4 className="text-xs font-black uppercase tracking-widest text-white/95">Local Vector Index</h4>
             <div className="px-2 py-0.5 rounded text-[9px] font-mono font-bold bg-purple-500/20 text-purple-400 border border-purple-500/30">
@@ -1082,7 +1082,7 @@ function MLModelDashboard({ history, loading, onRetrain }) {
         </Card>
 
         {/* Query Latency Bounds */}
-        <Card className="glass-card border-white/10 p-5 space-y-4 bg-gradient-to-br from-blue-950/10 to-transparent">
+        <Card className="rounded-none border-2 border-white/20 bg-black p-5 space-y-4 bg-gradient-to-br from-blue-950/10 to-transparent">
           <div className="flex items-center justify-between">
             <h4 className="text-xs font-black uppercase tracking-widest text-white/95">Latency Bounds</h4>
             <div className="px-2 py-0.5 rounded text-[9px] font-mono font-bold bg-blue-500/20 text-blue-400 border border-blue-500/30">
@@ -1100,7 +1100,7 @@ function MLModelDashboard({ history, loading, onRetrain }) {
 
 
       {/* RMSE Learning Curve Chart */}
-      <Card className="glass-card border-white/10">
+      <Card className="rounded-none border-2 border-white/20 bg-black">
         <CardHeader className="pb-2">
           <CardTitle className="text-base flex items-center gap-2">
             <TrendingUp size={16} className="text-purple-400" />
@@ -1170,7 +1170,7 @@ function MLModelDashboard({ history, loading, onRetrain }) {
       </Card>
 
       {/* Historical Training Runs Table */}
-      <Card className="glass-card border-white/10">
+      <Card className="rounded-none border-2 border-white/20 bg-black">
         <CardHeader>
           <CardTitle className="text-base flex items-center gap-2">
             <Film size={16} className="text-blue-400" />

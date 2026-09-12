@@ -232,8 +232,9 @@ class CineNexusAgent:
                 movie = await self.db.movies.find_one({"_id": ObjectId(movie_id)})
                 if movie:
                     tmdb_id = movie.get("tmdb_id")
-            except:
-                pass
+            except Exception as e:
+                import logging
+                logging.getLogger("cinenexus").warning("Swallowed bare exception", exc_info=True)
         
         if not tmdb_id or not TMDB_API_KEY:
             return {"error": "TMDB ID or API key not available"}
