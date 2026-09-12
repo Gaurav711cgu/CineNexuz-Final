@@ -1,3 +1,4 @@
 [lint]
-ignore = ["BLE001", "UP006", "UP035"]
-extend-ignore = ["BLE001", "UP", "I", "LOG"]
+select = ["E", "F"]
+ignore = ["E501", "F401", "F841", "RUF100"]
+extend-ignore = ["BLE001", "UP", "I", "LOG", "RUF100"]
