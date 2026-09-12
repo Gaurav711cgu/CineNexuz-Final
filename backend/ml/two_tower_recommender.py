@@ -114,7 +114,6 @@ if HAS_TORCH:
         def infonce_loss(self, q_emb, pos_c_emb, neg_c_emb):
             """In-batch InfoNCE contrastive loss."""
             # Positive pair similarity
-            pos_sim = torch.sum(q_emb * pos_c_emb, dim=-1) / self.temperature  # [B]
 
             # All-pairs similarity matrix (q vs all negatives)
             all_candidates = torch.cat([pos_c_emb, neg_c_emb], dim=0)         # [B+N, 128]

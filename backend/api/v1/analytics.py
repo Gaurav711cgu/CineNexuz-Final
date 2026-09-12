@@ -4,8 +4,8 @@ CineNexuz API v1 - Analytics, Telemetry & Health Domain Router
 Handles event stream ingestion, A/B testing statistical metrics,
 Prometheus telemetry scrapers, and health readiness probes.
 """
-from typing import Optional, List, Dict, Any
-from fastapi import APIRouter, HTTPException
+from typing import Optional
+from fastapi import APIRouter
 from pydantic import BaseModel
 
 from ml.ab_testing import calculate_experiment_significance

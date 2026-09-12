@@ -4,9 +4,8 @@ CineNexuz API v1 - Movie Catalog & Ingest Domain Router
 Handles catalog browsing, pagination, filtering (decade, genre, sorting),
 trending items, movie details, synopses, and collections.
 """
-from typing import Optional, List, Dict, Any
-from fastapi import APIRouter, Query, HTTPException, status
-from pydantic import BaseModel
+from typing import Optional
+from fastapi import APIRouter, Query
 
 router = APIRouter()
 

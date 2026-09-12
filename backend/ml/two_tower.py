@@ -7,14 +7,12 @@ Implements a PyTorch Two-Tower Deep Learning Recommender (YouTube/Pinterest Arch
 - Scoring: Cosine dot-product similarity <UserEmbedding, ItemEmbedding>
 """
 
-import os
-import json
 import logging
 import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from typing import Dict, List, Any, Tuple, Optional
+from typing import Dict
 
 logger = logging.getLogger("ml.two_tower")
 

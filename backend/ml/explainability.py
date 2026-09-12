@@ -6,7 +6,7 @@ Computes multi-factor explainability objects for recommended titles:
   - Multi-factor feature score breakdowns (SVD, Content-Based, Semantic Vector RAG, Popularity).
 """
 
-from typing import Dict, Any, List, Tuple
+from typing import Dict, Any
 
 
 def explain_recommendation(movie: dict, user_taste: dict, algorithm: str = "hybrid") -> str:

@@ -9,9 +9,9 @@ Two-Stage Pipeline:
   Total p99 SLA < 50ms.
 """
 import logging
-from typing import Optional, List, Dict, Any
+from typing import List, Dict, Any
 
-from fastapi import APIRouter, Query, HTTPException
+from fastapi import APIRouter, Query
 
 from retrieval.two_stage import two_stage_pipeline
 from ml.mmr_reranker import mmr_rerank

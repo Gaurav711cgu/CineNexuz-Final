@@ -11,7 +11,7 @@ Math:
 
 import logging
 import numpy as np
-from typing import Dict, List, Any, Tuple, Optional
+from typing import Dict, List, Tuple
 
 logger = logging.getLogger("ml.contextual_bandit")
 

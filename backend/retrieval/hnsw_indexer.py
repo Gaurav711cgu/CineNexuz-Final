@@ -8,10 +8,7 @@ Falls back to NumPy brute-force cosine only when hnswlib is unavailable (CI env)
 Zero-downtime updates: AtomicIndexSwapper dual-buffers active/staging indices
 so pointer swaps are instantaneous with no QPS drop.
 """
-import os
-import time
 import logging
-import inspect
 from typing import List, Dict, Any, Tuple, Optional
 import numpy as np
 

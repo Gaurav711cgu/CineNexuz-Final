@@ -11,7 +11,7 @@ import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from typing import List, Dict, Any, Optional
+from typing import Tuple, Optional, List
 
 logger = logging.getLogger("ml.sasrec")
 

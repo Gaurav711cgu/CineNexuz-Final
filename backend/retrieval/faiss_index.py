@@ -5,8 +5,7 @@ Reduces catalog size N to K=200 candidates in <10ms.
 Includes pure NumPy matrix dot-product fallback if FAISS binary is not present.
 """
 import logging
-import time
-from typing import List, Dict, Any, Tuple
+from typing import Any, Optional, List, Dict
 import numpy as np
 
 try:

@@ -4,16 +4,14 @@ CineNexuz API v1 - Authentication & User Management Domain Router
 Handles user registration, login, JWT token rotation, refresh token blacklisting,
 Clerk user sync, profile management, and RBAC authentication.
 """
-from typing import Optional, List, Dict, Any
-from fastapi import APIRouter, HTTPException, Depends, Request, Response, Body, status
-from pydantic import BaseModel, Field
+from typing import Optional, Dict, Any
+from fastapi import APIRouter, HTTPException, Depends, Request, Response, status
+from pydantic import BaseModel
 
 from security import (
     create_access_token,
     create_refresh_token,
     set_refresh_token_cookie,
-    blacklist_token,
-    is_token_blacklisted,
     verify_token,
     require_role,
     UserRole

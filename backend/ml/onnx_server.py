@@ -8,7 +8,7 @@ to avoid blocking the Python asyncio Event Loop.
 import os
 import asyncio
 import logging
-from typing import Dict, List, Any, Optional
+from typing import Any, Optional
 import numpy as np
 
 logger = logging.getLogger("ml.onnx_server")
@@ -94,7 +94,6 @@ class ONNXInferenceEngine:
 
     def _run_inference_sync(self, features: np.ndarray) -> np.ndarray:
         """Synchronous CPU/GPU inference execution."""
-        batch_size = features.shape[0] if len(features.shape) > 1 else 1
         
         if self.session is not None:
             input_name = self.session.get_inputs()[0].name

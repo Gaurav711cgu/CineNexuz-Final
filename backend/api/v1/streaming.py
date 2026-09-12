@@ -4,7 +4,6 @@ CineNexuz API v1 - HLS Adaptive Bitrate Streaming Domain Router
 Handles HLS master playlists, multi-bitrate variant playlists (1080p, 720p, 480p),
 and 4-second video segment delivery.
 """
-from typing import Optional
 from fastapi import APIRouter, HTTPException, Response
 
 from streaming.hls_encoder import hls_server_engine

@@ -7,7 +7,7 @@ Handles:
   - Resilient fallbacks for vector store cold-starts
 """
 import logging
-from typing import Optional, List, Dict, Any
+from typing import Optional
 
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel

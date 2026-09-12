@@ -7,8 +7,7 @@ non-parametric Mann-Whitney U hypothesis testing.
 """
 
 import hashlib
-import time
-from typing import Dict, Any, Optional, List
+from typing import Dict, Any, Optional
 import scipy.stats as stats
 import numpy as np
 

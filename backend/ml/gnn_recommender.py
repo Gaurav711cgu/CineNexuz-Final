@@ -10,7 +10,7 @@ import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from typing import List, Dict, Any, Tuple, Optional
+from typing import List, Tuple
 
 logger = logging.getLogger("ml.gnn_recommender")
 

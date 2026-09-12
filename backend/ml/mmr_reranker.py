@@ -5,8 +5,7 @@ Prevents filter bubbles by balancing relevance vs diversity using MMR math:
     MMR(d) = argmax [ lambda * Sim_1(d, User_Query) - (1 - lambda) * max_{s in S} Sim_2(d, s) ]
 """
 
-from typing import List, Dict, Any, Set
-import numpy as np
+from typing import List, Dict, Any
 
 
 def jaccard_genre_similarity(genres1: List[str], genres2: List[str]) -> float:

@@ -7,7 +7,7 @@ Prevents recommending movies users were already going to watch anyway, maximizin
 
 import numpy as np
 import logging
-from typing import Dict, List, Any, Tuple
+from typing import Dict, List, Any
 
 logger = logging.getLogger("ml.causal_uplift")
 
